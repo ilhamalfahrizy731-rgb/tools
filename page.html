@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SaaS Dashboard & Tools Portal</title>
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <style>
+        :root {
+            --navy: #1e1b4b;
+            --slate: #3b4f86;
+            --red: #dc2626;
+            --red-dark: #b91c1c;
+            --red-soft: #fde8e8;
+            --alert-bg: #fdeeee;
+            --amber: #f59e0b;
+            --indigo: #3730e3;
+            --bg-tint: #fff5f5;
+            --surface: #ffffff;
+            --surface-alt: #f6f7fc;
+            --border: #e5e8f3;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background-color: #fafbfc;
+            background-image: radial-gradient(circle at 100% 0%, rgba(255, 245, 245, 0.8) 0%, transparent 40%),
+                              radial-gradient(circle at 0% 100%, rgba(230, 235, 255, 0.5) 0%, transparent 40%);
+            color: var(--navy);
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar { width: 4px; height: 4px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+        /* Animasi masuk & transisi view */
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(12px) scale(0.98); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        .animate-fade-up {
+            animation: fadeUp 0.4s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+        }
+
+        /* Fokus ring kustom (Aksen Merah) */
+        input:focus, textarea:focus, select:focus {
+            border-color: var(--red) !important;
+            box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.15) !important;
+        }
+
+        /* Custom SweetAlert2 Styling */
+        div.swal2-popup {
+            border-radius: 28px !important;
+            font-family: 'Inter', system-ui, sans-serif !important;
+            padding: 1.75rem !important;
+            border: 1px solid var(--border) !important;
+            box-shadow: 0 25px 50px -12px rgba(30, 27, 75, 0.15) !important;
+        }
+        .swal2-title {
+            color: var(--navy) !important;
+            font-weight: 800 !important;
+            font-size: 1.25rem !important;
+        }
+        .swal2-html-container {
+            color: var(--slate) !important;
+            font-size: 0.875rem !important;
+        }
+        .swal2-confirm {
+            border-radius: 16px !important;
+            font-weight: 700 !important;
+            font-size: 0.875rem !important;
+            padding: 0.75rem 1.5rem !important;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col md:flex-row selection:bg-red-100 selection:text-red-900 pb-24 md:pb-0">
+
+    <!-- DESKTOP SIDEBAR -->
+    <aside class="hidden md:flex w-72 bg-white border-r border-[var(--border)] flex-col justify-between p-6 shrink-0 z-20 h-screen sticky top-0">
+        <div>
+            <!-- Logo / Brand -->
+            <div class="flex items-center gap-3 mb-8 px-2">
+                <div class="w-9 h-9 rounded-2xl bg-[var(--red)] flex items-center justify-center text-white font-extrabold shadow-lg shadow-red-500/30">
+                    S
+                </div>
+                <div>
+                    <h2 class="text-sm font-[800] text-[var(--navy)] tracking-tight">Developer Portal</h2>
+                    <p class="text-[11px] text-[var(--slate)]">SaaS Utility Dashboard</p>
+                </div>
+            </div>
+
+            <!-- Navigation Menu -->
+            <nav class="space-y-1.5 text-xs font-semibold">
+                <button onclick="switchView('home')" id="nav-home" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-[var(--navy)] bg-[var(--surface-alt)] transition-all duration-300">
+                    <svg class="w-4 h-4 text-[var(--red)] shrink-0" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+                    <span>Home (Alight Motion)</span>
+                </button>
+                <button onclick="switchView('jarvis')" id="nav-jarvis" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-[var(--slate)] hover:bg-[var(--surface-alt)] hover:text-[var(--navy)] transition-all duration-300">
+                    <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    <span>Jarvis Meme</span>
+                </button>
+                <button onclick="switchView('netflix')" id="nav-netflix" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-[var(--slate)] hover:bg-[var(--surface-alt)] hover:text-[var(--navy)] transition-all duration-300">
+                    <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                    <span>Netflix Token</span>
+                </button>
+                <button onclick="switchView('viu')" id="nav-viu" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-[var(--slate)] hover:bg-[var(--surface-alt)] hover:text-[var(--navy)] transition-all duration-300">
+                    <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path><path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    <span>Viu Account</span>
+                </button>
+                <button onclick="switchView('wareaction')" id="nav-wareaction" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-[var(--slate)] hover:bg-[var(--surface-alt)] hover:text-[var(--navy)] transition-all duration-300">
+                    <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>
+                    <span>WA Reaction</span>
+                </button>
+            </nav>
+        </div>
+
+        <!-- Footer Info Sidebar -->
+        <div class="pt-4 border-t border-[var(--border)] text-[11px] text-[var(--slate)] px-2">
+            <div class="flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                <span>System Operational</span>
+            </div>
+        </div>
+    </aside>
+
+    <!-- MOBILE FLOATING BOTTOM NAVBAR -->
+    <nav class="md:hidden fixed bottom-3 left-3 right-3 z-50 bg-white/95 backdrop-blur-xl border border-[var(--border)] rounded-full shadow-[0_10px_30px_rgba(30,27,75,0.15)] flex items-center justify-around px-3 py-2 overflow-x-auto no-scrollbar gap-1">
+        <button onclick="switchView('home')" id="mob-nav-home" class="mob-btn p-3 rounded-full text-[var(--red)] bg-[var(--surface-alt)] transition-all duration-300 shrink-0 shadow-sm">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+        </button>
+        <button onclick="switchView('jarvis')" id="mob-nav-jarvis" class="mob-btn p-3 rounded-full text-[var(--slate)] transition-all duration-300 shrink-0">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+        </button>
+        <button onclick="switchView('netflix')" id="mob-nav-netflix" class="mob-btn p-3 rounded-full text-[var(--slate)] transition-all duration-300 shrink-0">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+        </button>
+        <button onclick="switchView('viu')" id="mob-nav-viu" class="mob-btn p-3 rounded-full text-[var(--slate)] transition-all duration-300 shrink-0">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path><path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+        </button>
+        <button onclick="switchView('wareaction')" id="mob-nav-wareaction" class="mob-btn p-3 rounded-full text-[var(--slate)] transition-all duration-300 shrink-0">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>
+        </button>
+    </nav>
+
+    <!-- MAIN CONTENT CONTAINER -->
+    <main class="flex-1 flex items-center justify-center p-4 lg:p-8 overflow-y-auto">
+
+        <!-- VIEW 1: HOME (ALIGHT MOTION PRO) -->
+        <div id="view-home" class="view-container w-full max-w-md bg-white border border-[var(--border)] rounded-[32px] shadow-[0_20px_40px_-15px_rgba(30,27,75,0.07)] p-6 sm:p-8 relative animate-fade-up backdrop-blur-xl">
+            <div class="mb-6">
+                <div class="flex items-center gap-2.5 mb-1.5">
+                    <span class="relative flex h-2 w-2">
+                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                        <span class="relative inline-flex rounded-full h-2 w-2 bg-[var(--red)]"></span>
+                    </span>
+                    <span class="text-[11px] font-bold tracking-[0.1em] text-[var(--slate)] uppercase">Alight Motion Pro</span>
+                </div>
+                <h1 class="text-2xl font-[800] text-[var(--navy)] tracking-tight">Portal Aktivasi Lisensi</h1>
+                <p class="text-sm text-[var(--slate)] mt-1">Kelola keanggotaan dan verifikasi akun dengan cepat & aman.</p>
+            </div>
+
+            <!-- Step Indicator -->
+            <div class="grid grid-cols-2 gap-1.5 bg-[#f6f7fc] p-1.5 rounded-2xl border border-[#e5e8f3] mb-6 text-xs font-semibold">
+                <div id="step-1-indicator" class="flex items-center justify-center gap-2 py-2.5 rounded-xl bg-white text-[var(--navy)] shadow-sm transition-all duration-300">
+                    <span class="w-5 h-5 rounded-full bg-[var(--navy)] text-white text-[10px] flex items-center justify-center font-bold">1</span>
+                    <span>Kirim Link</span>
+                </div>
+                <div id="step-2-indicator" class="flex items-center justify-center gap-2 py-2.5 rounded-xl text-zinc-400 transition-all duration-300">
+                    <span class="w-5 h-5 rounded-full bg-zinc-200 text-zinc-600 text-[10px] flex items-center justify-center font-bold">2</span>
+                    <span>Verifikasi</span>
+                </div>
+            </div>
+
+            <!-- Stage 1 Form -->
+            <form id="form-send" class="space-y-4">
+                <div>
+                    <label for="email" class="block text-xs font-bold text-[var(--navy)] uppercase tracking-wider mb-2">Email Target</label>
+                    <input 
+                        type="email" 
+                        id="email" 
+                        required 
+                        placeholder="namaemail@gmail.com"
+                        class="w-full bg-[#f6f7fc] border border-[#e5e8f3] rounded-2xl px-4 py-3 text-sm text-[var(--navy)] placeholder-zinc-400 focus:outline-none transition"
+                    >
+                </div>
+                <button 
+                    type="submit" 
+                    id="btn-send"
+                    class="w-full bg-[var(--red)] hover:bg-[var(--red-dark)] text-white font-bold py-3.5 px-6 rounded-2xl text-sm transition-all duration-200 shadow-lg shadow-red-500/25 cursor-pointer flex items-center justify-center gap-2 hover:-translate-y-0.5 active:translate-y-0"
+                >
+                    <span>Kirim Magic Link</span>
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"></path></svg>
+                </button>
+            </form>
+
+            <!-- Stage 2 Form (Hidden) -->
+            <form id="form-verify" class="space-y-4 hidden">
+                <div class="bg-[var(--surface-alt)] border border-[var(--border)] p-4 rounded-2xl text-xs text-[var(--slate)] leading-relaxed">
+                    Magic link telah dikirim ke <span id="target-email-label" class="text-[var(--navy)] font-bold underline"></span>. Salin URL lengkap atau kode <code class="bg-white px-1.5 py-0.5 rounded text-[var(--red)] font-mono border border-[var(--border)]">oobCode</code> di bawah ini.
+                </div>
+                <div>
+                    <label for="magicLink" class="block text-xs font-bold text-[var(--navy)] uppercase tracking-wider mb-2">Magic Link / oobCode</label>
+                    <textarea 
+                        id="magicLink" 
+                        rows="3" 
+                        required 
+                        placeholder="https://alight-creative.firebaseapp.com/__/auth/action?mode=signIn&oobCode=..."
+                        class="w-full bg-[#f6f7fc] border border-[#e5e8f3] rounded-2xl p-3.5 text-xs text-[var(--navy)] placeholder-zinc-400 focus:outline-none transition font-mono resize-none leading-relaxed"
+                    ></textarea>
+                </div>
+                <div class="flex gap-2.5">
+                    <button 
+                        type="button" 
+                        id="btn-back"
+                        class="w-1/3 bg-[#f6f7fc] hover:bg-zinc-100 text-[var(--navy)] font-bold py-3 rounded-2xl text-xs transition border border-[var(--border)] cursor-pointer"
+                    >
+                        Kembali
+                    </button>
+                    <button 
+                        type="submit" 
+                        id="btn-verify"
+                        class="w-2/3 bg-[var(--red)] hover:bg-[var(--red-dark)] text-white font-bold py-3 px-4 rounded-2xl text-xs transition-all duration-200 shadow-lg shadow-red-500/25 cursor-pointer flex items-center justify-center gap-2 hover:-translate-y-0.5"
+                    >
+                        <span>Verifikasi & Aktifkan</span>
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"></path></svg>
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- VIEW 2: JARVIS MEME -->
+        <div id="view-jarvis" class="view-container hidden w-full max-w-lg bg-white border border-[var(--border)] rounded-[32px] shadow-[0_20px_40px_-15px_rgba(30,27,75,0.07)] p-6 sm:p-8 relative animate-fade-up">
+            <div class="mb-6">
+                <h1 class="text-2xl font-[800] text-[var(--navy)] tracking-tight">Jarvis Meme Generator</h1>
+                <p class="text-sm text-[var(--slate)] mt-1">Buat meme Jarvis kustom secara instan.</p>
+            </div>
+            <form id="form-jarvis" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-bold text-[var(--navy)] uppercase tracking-wider mb-2">Teks Meme</label>
+                    <input type="text" id="jarvis-text" required placeholder="jarvis tolong itu anunya..." class="w-full bg-[#f6f7fc] border border-[#e5e8f3] rounded-2xl px-4 py-3 text-sm text-[var(--navy)] placeholder-zinc-400 focus:outline-none transition">
+                </div>
+                <button type="submit" id="btn-jarvis" class="w-full bg-[var(--red)] hover:bg-[var(--red-dark)] text-white font-bold py-3.5 rounded-2xl text-sm transition shadow-lg shadow-red-500/25 cursor-pointer flex items-center justify-center gap-2">
+                    <span>Generate Jarvis Meme</span>
+                </button>
+            </form>
+            <div id="result-jarvis" class="mt-6 hidden text-center space-y-3">
+                <p class="text-xs font-bold text-[var(--navy)] uppercase tracking-wider">Hasil Meme:</p>
+                <div class="p-3 bg-[#f6f7fc] rounded-2xl border border-[var(--border)] inline-block">
+                    <img id="img-jarvis-result" src="" alt="Jarvis Meme" class="max-h-60 rounded-xl mx-auto object-contain">
+                </div>
+            </div>
+        </div>
+
+        <!-- VIEW 3: NETFLIX TOKEN -->
+        <div id="view-netflix" class="view-container hidden w-full max-w-md bg-white border border-[var(--border)] rounded-[32px] shadow-[0_20px_40px_-15px_rgba(30,27,75,0.07)] p-8 text-center animate-fade-up">
+            <div class="w-12 h-12 bg-red-100 text-red-600 rounded-2xl flex items-center justify-center mx-auto mb-4 font-bold">N</div>
+            <h1 class="text-xl font-[800] text-[var(--navy)]">Netflix Token</h1>
+            <p class="text-sm text-[var(--slate)] mt-2">Fitur dan integrasi API untuk Netflix Token sedang dalam tahap pengembangan. Silakan cek kembali nanti.</p>
+        </div>
+
+        <!-- VIEW 4: VIU ACCOUNT -->
+        <div id="view-viu" class="view-container hidden w-full max-w-md bg-white border border-[var(--border)] rounded-[32px] shadow-[0_20px_40px_-15px_rgba(30,27,75,0.07)] p-8 text-center animate-fade-up">
+            <div class="w-12 h-12 bg-amber-100 text-amber-600 rounded-2xl flex items-center justify-center mx-auto mb-4 font-bold">V</div>
+            <h1 class="text-xl font-[800] text-[var(--navy)]">Viu Account</h1>
+            <p class="text-sm text-[var(--slate)] mt-2">Fitur dan integrasi API untuk Viu Account sedang dalam tahap pengembangan. Silakan cek kembali nanti.</p>
+        </div>
+
+        <!-- VIEW 5: WA REACTION -->
+        <div id="view-wareaction" class="view-container hidden w-full max-w-md bg-white border border-[var(--border)] rounded-[32px] shadow-[0_20px_40px_-15px_rgba(30,27,75,0.07)] p-8 text-center animate-fade-up">
+            <div class="w-12 h-12 bg-emerald-100 text-emerald-600 rounded-2xl flex items-center justify-center mx-auto mb-4 font-bold">WA</div>
+            <h1 class="text-xl font-[800] text-[var(--navy)]">WA Reaction</h1>
+            <p class="text-sm text-[var(--slate)] mt-2">Fitur dan integrasi API untuk WhatsApp Reaction sedang dalam tahap pengembangan. Silakan cek kembali nanti.</p>
+        </div>
+
+    </main>
+
+    <script>
+        // Switch View dengan Animasi Smooth
+        function switchView(viewId) {
+            document.querySelectorAll('.view-container').forEach(el => {
+                el.classList.add('hidden');
+                el.classList.remove('animate-fade-up');
+            });
+
+            const activeView = document.getElementById('view-' + viewId);
+            if (activeView) {
+                activeView.classList.remove('hidden');
+                void activeView.offsetWidth;
+                activeView.classList.add('animate-fade-up');
+            }
+
+            // Update Desktop Sidebar Buttons
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.className = "nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-[var(--slate)] hover:bg-[var(--surface-alt)] hover:text-[var(--navy)] transition-all duration-300";
+                const svg = btn.querySelector('svg');
+                if (svg) svg.classList.remove('text-[var(--red)]');
+            });
+            const activeDesktopBtn = document.getElementById('nav-' + viewId);
+            if (activeDesktopBtn) {
+                activeDesktopBtn.className = "nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-[var(--navy)] bg-[var(--surface-alt)] transition-all duration-300 font-bold";
+                const svg = activeDesktopBtn.querySelector('svg');
+                if (svg) svg.classList.add('text-[var(--red)]');
+            }
+
+            // Update Mobile Bottom Navbar Buttons
+            document.querySelectorAll('.mob-btn').forEach(btn => {
+                btn.className = "mob-btn p-3 rounded-full text-[var(--slate)] transition-all duration-300 shrink-0";
+            });
+            const activeMobBtn = document.getElementById('mob-nav-' + viewId);
+            if (activeMobBtn) {
+                activeMobBtn.className = "mob-btn p-3 rounded-full text-[var(--red)] bg-[var(--surface-alt)] transition-all duration-300 shrink-0 shadow-sm";
+            }
+        }
+
+        let currentEmail = '';
+
+        const formSend = document.getElementById('form-send');
+        const formVerify = document.getElementById('form-verify');
+        const emailInput = document.getElementById('email');
+        const magicLinkInput = document.getElementById('magicLink');
+        const btnSend = document.getElementById('btn-send');
+        const btnVerify = document.getElementById('btn-verify');
+        const btnBack = document.getElementById('btn-back');
+        const targetEmailLabel = document.getElementById('target-email-label');
+        const step1Ind = document.getElementById('step-1-indicator');
+        const step2Ind = document.getElementById('step-2-indicator');
+
+        function setStep(step) {
+            if (step === 2) {
+                step1Ind.className = "flex items-center justify-center gap-2 py-2.5 rounded-xl text-zinc-400 transition-all duration-300";
+                step1Ind.querySelector('span').className = "w-5 h-5 rounded-full bg-zinc-200 text-zinc-600 text-[10px] flex items-center justify-center font-bold";
+                
+                step2Ind.className = "flex items-center justify-center gap-2 py-2.5 rounded-xl bg-white text-[var(--navy)] shadow-sm transition-all duration-300";
+                step2Ind.querySelector('span').className = "w-5 h-5 rounded-full bg-[var(--navy)] text-white text-[10px] flex items-center justify-center font-bold";
+            } else {
+                step1Ind.className = "flex items-center justify-center gap-2 py-2.5 rounded-xl bg-white text-[var(--navy)] shadow-sm transition-all duration-300";
+                step1Ind.querySelector('span').className = "w-5 h-5 rounded-full bg-[var(--navy)] text-white text-[10px] flex items-center justify-center font-bold";
+                
+                step2Ind.className = "flex items-center justify-center gap-2 py-2.5 rounded-xl text-zinc-400 transition-all duration-300";
+                step2Ind.querySelector('span').className = "w-5 h-5 rounded-full bg-zinc-200 text-zinc-600 text-[10px] flex items-center justify-center font-bold";
+            }
+        }
+
+        function showAlert(msg, isSuccess) {
+            Swal.fire({
+                icon: isSuccess ? 'success' : 'error',
+                title: isSuccess ? 'Berhasil' : 'Gagal',
+                text: msg,
+                timer: 3500,
+                timerProgressBar: true,
+                showConfirmButton: false
+            });
+        }
+
+        function showSuccessResultModal(data) {
+            const validUntilStr = data.validUntil 
+                ? new Date(data.validUntil).toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' }) 
+                : '-';
+
+            Swal.fire({
+                icon: 'success',
+                title: 'Aktivasi Berhasil!',
+                html: `
+                    <div class="mt-3 bg-[#f6f7fc] p-4 rounded-2xl border border-[#e5e8f3] text-xs font-mono text-left space-y-2.5">
+                        <div class="flex justify-between border-b border-[#e5e8f3] pb-2">
+                            <span class="text-zinc-400">Status:</span>
+                            <span class="text-emerald-600 font-bold">${data.membershipStatus || 'PREMIUM_ACTIVE'}</span>
+                        </div>
+                        <div class="flex justify-between border-b border-[#e5e8f3] pb-2">
+                            <span class="text-zinc-400">Plan:</span>
+                            <span class="text-[#1e1b4b] font-bold">${data.planName || '-'}</span>
+                        </div>
+                        <div class="flex justify-between border-b border-[#e5e8f3] pb-2">
+                            <span class="text-zinc-400">Order ID:</span>
+                            <span class="text-[#1e1b4b] font-semibold">${data.orderId || '-'}</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-zinc-400">Valid Until:</span>
+                            <span class="text-[#1e1b4b] font-semibold">${validUntilStr}</span>
+                        </div>
+                    </div>
+                    <p class="text-[11px] text-zinc-400 mt-4">Halaman akan di-refresh otomatis dalam 5 detik...</p>
+                `,
+                confirmButtonText: 'Proses Akun Lain',
+                confirmButtonColor: '#1e1b4b',
+                timer: 5000,
+                timerProgressBar: true
+            }).then(() => {
+                location.reload();
+            });
+        }
+
+        const spinnerSvg = `
+            <svg class="animate-spin h-4 w-4 text-white shrink-0" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+        `;
+
+        // Alight Motion Stage 1
+        formSend.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            currentEmail = emailInput.value.trim();
+            btnSend.disabled = true;
+            btnSend.innerHTML = `${spinnerSvg}<span>Mengirim...</span>`;
+
+            try {
+                const res = await fetch('https://satriam.satriadeveloperz.workers.dev/api/satriam/send-link', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email: currentEmail })
+                });
+                const data = await res.json();
+                if (res.ok && data.success) {
+                    showAlert(data.message, true);
+                    targetEmailLabel.textContent = currentEmail;
+                    formSend.classList.add('hidden');
+                    formVerify.classList.remove('hidden');
+                    setStep(2);
+                } else {
+                    showAlert(data.message || 'Gagal mengirim link.', false);
+                }
+            } catch (err) {
+                showAlert('Kesalahan koneksi: ' + err.message, false);
+            } finally {
+                btnSend.disabled = false;
+                btnSend.innerHTML = `<span>Kirim Magic Link</span>`;
+            }
+        });
+
+        btnBack.addEventListener('click', () => {
+            formVerify.classList.add('hidden');
+            formSend.classList.remove('hidden');
+            setStep(1);
+        });
+
+        // Alight Motion Stage 2
+        formVerify.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            btnVerify.disabled = true;
+            btnVerify.innerHTML = `${spinnerSvg}<span>Memproses...</span>`;
+
+            try {
+                const res = await fetch('https://satriam.satriadeveloperz.workers.dev/api/satriam/verify-link', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email: currentEmail, magicLink: magicLinkInput.value.trim() })
+                });
+                const data = await res.json();
+                if (res.ok && data.success) {
+                    showSuccessResultModal(data);
+                } else {
+                    showAlert(data.message || 'Verifikasi gagal.', false);
+                }
+            } catch (err) {
+                showAlert('Kesalahan koneksi: ' + err.message, false);
+            } finally {
+                btnVerify.disabled = false;
+                btnVerify.innerHTML = `<span>Verifikasi & Aktifkan</span>`;
+            }
+        });
+
+        // JARVIS MEME API HANDLER
+        document.getElementById('form-jarvis').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const text = encodeURIComponent(document.getElementById('jarvis-text').value.trim());
+            const btn = document.getElementById('btn-jarvis');
+            btn.disabled = true;
+            btn.innerHTML = `${spinnerSvg}<span>Generating...</span>`;
+
+            try {
+                const jarvisUrl = `https://api.synoxcloud.xyz/canvas/jarvis-meme?text=${text}&apikey=FREE`;
+                document.getElementById('img-jarvis-result').src = jarvisUrl;
+                document.getElementById('result-jarvis').classList.remove('hidden');
+                showAlert('Jarvis Meme berhasil dibuat!', true);
+            } catch (err) {
+                showAlert('Gagal membuat meme.', false);
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = `<span>Generate Jarvis Meme</span>`;
+            }
+        });
+    </script>
+</body>
+</html>
