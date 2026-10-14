@@ -2,499 +2,1185 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SaaS Dashboard & Tools Portal</title>
-    <!-- Google Fonts: Inter -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>SaaS Dashboard &amp; Tools Portal</title>
+    <!-- Google Fonts: Cormorant Garamond -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">
+    <!-- Font Awesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <!-- SweetAlert2 -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
     <style>
-        :root {
-            --navy: #1e1b4b;
-            --slate: #3b4f86;
-            --red: #dc2626;
-            --red-dark: #b91c1c;
-            --red-soft: #fde8e8;
-            --alert-bg: #fdeeee;
-            --amber: #f59e0b;
-            --indigo: #3730e3;
-            --bg-tint: #fff5f5;
-            --surface: #ffffff;
-            --surface-alt: #f6f7fc;
-            --border: #e5e8f3;
-        }
+:root{
+  --paper:#f4f1ee;
+  --card:#fbfaf9;
+  --ink:#151311;
+  --mute:#7d776f;
+  --line:rgba(21,19,17,.2);
+  --f:'Cormorant Garamond','Times New Roman',serif;
+  --mono:ui-monospace,SFMono-Regular,Menlo,monospace;
+  --ease:cubic-bezier(.16,1,.3,1);
+  --ease-out:cubic-bezier(.16,1,.3,1);
+  --ease-spring:cubic-bezier(.34,1.56,.64,1);
+  --accent:#d4a843;
+  --accent-hover:#e8c56d;
+  --accent-rgb:212,168,67;
+  --sidebar-width:310px;
+  --sidebar-collapsed-width:80px;
+  --nav-indicator-size:3px;
+  --glass-bg:rgba(251,250,249,.92);
+  --glass-border:rgba(21,19,17,.06);
+  --shadow-sm:0 1px 2px rgba(21,19,17,.05);
+  --shadow-md:0 4px 16px rgba(21,19,17,.08);
+  --shadow-lg:0 16px 48px rgba(21,19,17,.12);
+  --shadow-xl:0 32px 96px rgba(21,19,17,.15);
+  --icon-size:22px;
+  --brand-icon-size:36px;
+  --collapse-duration:.4s;
+  --collapse-ease:cubic-bezier(.16,1,.3,1);
+  --focus-ring:0 0 0 3px rgba(var(--accent-rgb),.35);
+  --input-bg:rgba(255,255,255,.6);
+  --ripple-color:rgba(255,255,255,.35);
+  /* Fluid typography */
+  --text-xs:clamp(11px,1.2vw,13px);
+  --text-sm:clamp(13px,1.5vw,15px);
+  --text-base:clamp(15px,2vw,18px);
+  --text-lg:clamp(17px,2.2vw,20px);
+  --text-xl:clamp(20px,2.8vw,24px);
+  --text-2xl:clamp(24px,3.5vw,32px);
+  --text-3xl:clamp(32px,4.5vw,48px);
+  --text-4xl:clamp(38px,5.5vw,62px);
+  /* Spacing scale */
+  --space-1:4px;
+  --space-2:8px;
+  --space-3:12px;
+  --space-4:16px;
+  --space-5:20px;
+  --space-6:24px;
+  --space-8:32px;
+  --space-10:40px;
+  --space-12:48px;
+  --space-16:64px;
+  /* Touch targets */
+  --touch-min:44px;
+  --touch-lg:48px;
+  /* Breakpoints (for reference in media queries) */
+  --bp-sm:480px;
+  --bp-md:820px;
+  --bp-lg:1024px;
+  --bp-xl:1280px;
+}
+*{box-sizing:border-box;margin:0}
+html{-webkit-font-smoothing:antialiased;scrollbar-width:thin;scrollbar-color:var(--ink) var(--paper)}
+body{font:500 var(--text-base)/1.5 var(--f);background:var(--paper);color:var(--ink);min-height:100vh}
+em{font-style:italic;text-transform:none;font-weight:500}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer;min-height:var(--touch-min)}
+a{color:inherit}
+::selection{background:var(--ink);color:var(--paper)}
+:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
+.hidden{display:none!important}
+.app{display:flex;min-height:100vh}
+/* SIDEBAR */
+.side{width:var(--sidebar-width);flex:none;position:sticky;top:0;height:100vh;background:var(--ink);color:var(--paper);display:flex;flex-direction:column;justify-content:space-between;padding:var(--space-8) var(--space-8);overflow:hidden;transition:width var(--collapse-duration) var(--collapse-ease),padding var(--collapse-duration) var(--collapse-ease);will-change:width}
+.side.collapsed{width:var(--sidebar-collapsed-width);padding:var(--space-8) var(--space-4)}
+.side.collapsed .brand-text,
+.side.collapsed .nav-label,
+.side.collapsed .nav-btn em,
+.side.collapsed .status,
+.side.collapsed .user-badge{opacity:0;transform:translateX(-12px);pointer-events:none}
+.side.collapsed .brand{justify-content:center;margin-bottom:var(--space-8);padding-bottom:var(--space-6)}
+.side.collapsed .nav-btn{justify-content:center;padding:14px 0 14px 0}
+.side.collapsed .nav-btn::before{display:none}
+.brand{display:flex;align-items:center;gap:var(--space-3);animation:slideIn .6s var(--ease-out) backwards;transition:justify-content var(--collapse-duration) var(--collapse-ease),margin-bottom var(--collapse-duration) var(--collapse-ease),padding-bottom var(--collapse-duration) var(--collapse-ease)}
+.brand-icon{flex-shrink:0;width:var(--brand-icon-size);height:var(--brand-icon-size);border-radius:10px;background:linear-gradient(135deg,var(--accent),var(--accent-hover));display:flex;align-items:center;justify-content:center;color:var(--ink);transition:transform .3s var(--ease-spring)}
+.side.collapsed .brand-icon{transform:scale(1.05)}
+.brand-icon svg{width:22px;height:22px;stroke-width:2.5}
+.brand-text{display:flex;flex-direction:column;gap:4px;min-width:0;transition:opacity .2s var(--collapse-duration),transform .3s var(--collapse-ease)}
+.brand-text b{font:500 var(--text-2xl)/1 var(--f);text-transform:uppercase;letter-spacing:-.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.brand-text span{font-style:italic;color:rgba(244,241,238,.55);font-size:var(--text-sm);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;transition:opacity .2s .05s}
+.sidebar-toggle{position:absolute;top:var(--space-6);right:var(--space-6);width:36px;height:36px;border-radius:8px;background:rgba(255,255,255,.05);align-items:center;justify-content:center;color:var(--paper);transition:background .2s,transform .3s var(--ease-out),background-color .3s var(--ease-out),right var(--collapse-duration) var(--collapse-ease);display:flex}
+.sidebar-toggle:hover{background:rgba(255,255,255,.12)}
+.sidebar-toggle:active{transform:scale(.95)}
+.sidebar-toggle svg{width:20px;height:20px;stroke-width:2.5;transition:transform .3s var(--ease-out)}
+.side.collapsed .sidebar-toggle{right:22px;background:rgba(var(--accent-rgb),.15);color:var(--accent)}
+.side.collapsed .sidebar-toggle:hover{background:rgba(var(--accent-rgb),.25)}
+.side.collapsed .sidebar-toggle svg{transform:rotate(180deg)}
+@media(max-width:820px){.sidebar-toggle{display:none}}
+.side nav{margin-top:var(--space-6);border-top:1px solid rgba(244,241,238,.16);animation:slideIn .6s var(--ease-out) .16s backwards;transition:border-color var(--collapse-duration) var(--collapse-ease)}
+.nav-btn{display:flex;align-items:center;gap:var(--space-3);position:relative;width:100%;text-align:left;padding:14px 0 14px calc(var(--nav-indicator-size) + 12px);border-bottom:1px solid rgba(244,241,238,.16);font-size:var(--text-base);line-height:1.1;text-transform:uppercase;color:rgba(244,241,238,.45);transition:color .25s var(--ease-out),background .2s,gap .25s var(--ease-out),padding-left .25s var(--ease-out);min-height:var(--touch-min)}
+.nav-btn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:var(--nav-indicator-size);background:var(--accent);transform:scaleY(0);transform-origin:bottom;transition:transform .4s var(--ease-out),opacity .3s}
+.nav-btn::after{content:"";position:absolute;inset:0;background:rgba(255,255,255,.03);opacity:0;transition:opacity .2s}
+.nav-btn:hover{color:var(--paper);gap:var(--space-4)}
+.nav-btn:hover::after{opacity:1}
+.nav-btn.on{color:var(--paper)}
+.nav-btn.on::before{transform:scaleY(1);transform-origin:top}
+.nav-btn:focus-visible{outline:none}
+.nav-btn:focus-visible::after{opacity:1}
+.nav-icon{flex-shrink:0;width:var(--icon-size);height:var(--icon-size);display:flex;align-items:center;justify-content:center;color:currentColor;transition:transform .3s var(--ease-spring),color .25s var(--ease-out)}
+.nav-icon svg{width:100%;height:100%;stroke-width:2}
+.nav-btn:hover .nav-icon,.nav-btn.on .nav-icon{transform:scale(1.1);color:var(--accent)}
+.nav-label{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;transition:opacity .2s var(--collapse-duration),transform .3s var(--collapse-ease)}
+.nav-btn em{font-size:.7em;color:rgba(244,241,238,.35);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;transition:opacity .2s var(--collapse-duration),transform .3s var(--collapse-ease)}
+.status{display:flex;align-items:center;gap:var(--space-3);font-size:var(--text-sm);color:rgba(244,241,238,.7);padding-top:var(--space-5);animation:slideIn .6s var(--ease-out) .32s backwards;transition:opacity .2s var(--collapse-duration),transform .3s var(--collapse-ease)}
+.status i{width:8px;height:8px;border-radius:50%;background:#3fb27f;animation:pu 2.4s infinite}
+@keyframes pu{0%{box-shadow:0 0 0 0 rgba(63,178,127,.55)}70%,100%{box-shadow:0 0 0 11px rgba(63,178,127,0)}}
+@keyframes slideIn{from{opacity:0;transform:translateX(-20px)}to{opacity:1;transform:translateX(0)}}
+.user-badge{display:flex;align-items:center;gap:var(--space-3);padding-top:var(--space-5);border-top:1px solid rgba(244,241,238,.16);animation:slideIn .6s var(--ease-out) .4s backwards;transition:opacity .2s var(--collapse-duration),transform .3s var(--collapse-ease)}
+.user-badge.hidden{display:none}
+.avatar{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent-hover));display:flex;align-items:center;justify-content:center;font:500 16px var(--f);color:var(--ink);text-transform:uppercase}
+.user-info{flex:1;min-width:0}
+.user-info b{display:block;font:500 15px/1.2 var(--f);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.user-info span{font:13px/1 var(--mono);color:rgba(244,241,238,.5);text-transform:uppercase;letter-spacing:.05em}
+@media(prefers-reduced-motion:reduce){
+  .side,.brand,.brand-text,.nav-btn,.nav-label,.nav-btn em,.status,.user-badge{transition-duration:.01ms!important}
+  .brand-icon,.nav-icon{transition-duration:.01ms!important}
+}
 
-        body {
-            font-family: 'Inter', system-ui, -apple-system, sans-serif;
-            background-color: #fafbfc;
-            background-image: radial-gradient(circle at 100% 0%, rgba(255, 245, 245, 0.8) 0%, transparent 40%),
-                              radial-gradient(circle at 0% 100%, rgba(230, 235, 255, 0.5) 0%, transparent 40%);
-            color: var(--navy);
-            -webkit-font-smoothing: antialiased;
-        }
+/* TABLET: Auto-collapse sidebar at 1024px */
+@media(max-width:1024px){
+  .side:not(.collapsed){width:var(--sidebar-collapsed-width);padding:var(--space-8) var(--space-4)}
+  .side:not(.collapsed) .brand-text,
+  .side:not(.collapsed) .nav-label,
+  .side:not(.collapsed) .nav-btn em,
+  .side:not(.collapsed) .status,
+  .side:not(.collapsed) .user-badge{opacity:0;transform:translateX(-12px);pointer-events:none}
+  .side:not(.collapsed) .brand{justify-content:center;margin-bottom:var(--space-8);padding-bottom:var(--space-6)}
+  .side:not(.collapsed) .nav-btn{justify-content:center;padding:14px 0 14px 0}
+  .side:not(.collapsed) .nav-btn::before{display:none}
+  .side:not(.collapsed) .brand-icon{transform:scale(1.05)}
+  .side:not(.collapsed) .sidebar-toggle{right:22px;background:rgba(var(--accent-rgb),.15);color:var(--accent)}
+  .side:not(.collapsed) .sidebar-toggle:hover{background:rgba(var(--accent-rgb),.25)}
+  .side:not(.collapsed) .sidebar-toggle svg{transform:rotate(180deg)}
+}
+/* MAIN */
+main{flex:1;display:grid;place-items:center;padding:clamp(24px,5vw,80px);min-height:100vh}
+.view{width:100%;max-width:580px;background:var(--glass-bg);backdrop-filter:saturate(180%) blur(24px);border:1px solid var(--glass-border);border-radius:20px;box-shadow:var(--shadow-md);padding:clamp(32px,5vw,64px);position:relative;overflow:hidden;transition:box-shadow .3s var(--ease-out),transform .3s var(--ease-out),border-color .3s var(--ease-out)}
+.view::before{content:"";position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(var(--accent-rgb),.3),transparent);opacity:0;transition:opacity .4s var(--ease-out)}
+.view:hover{box-shadow:var(--shadow-lg);transform:translateY(-2px);border-color:rgba(var(--accent-rgb),.15)}
+.view:hover::before{opacity:1}
+@media(prefers-reduced-motion:reduce){.view{transition:none}.view:hover{transform:none;box-shadow:var(--shadow-md)}}
+.animate-fade-up{animation:up .9s var(--ease-out) both}
+@keyframes up{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:translateY(0)}}
+.stagger-in > *{opacity:0;animation:staggerUp .7s var(--ease-out) forwards}
+.stagger-in > *:nth-child(1){animation-delay:.05s}
+.stagger-in > *:nth-child(2){animation-delay:.12s}
+.stagger-in > *:nth-child(3){animation-delay:.19s}
+.stagger-in > *:nth-child(4){animation-delay:.26s}
+.stagger-in > *:nth-child(5){animation-delay:.33s}
+.stagger-in > *:nth-child(6){animation-delay:.4s}
+@keyframes staggerUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.lab{display:flex;align-items:center;gap:10px;font-style:italic;color:var(--mute);font-size:22px;letter-spacing:.01em}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--accent);animation:bl 2s infinite;box-shadow:0 0 8px rgba(var(--accent-rgb),.4)}
+@keyframes bl{50%{opacity:.25}}
+h1{font:500 clamp(38px,4.5vw,62px)/.95 var(--f);text-transform:uppercase;letter-spacing:-.015em;margin:8px 0 12px;color:var(--ink)}
+.sub{color:#3b3732;margin-bottom:36px;line-height:1.6;font-size:19px}
+.steps{display:grid;grid-template-columns:1fr 1fr;gap:8px;border-bottom:1px solid var(--line);margin-bottom:36px;padding-bottom:16px;position:relative}
+.steps::after{content:"";position:absolute;bottom:-1px;left:50%;width:1px;height:8px;background:var(--line)}
+.stp{display:flex;gap:10px;align-items:baseline;padding:12px 16px;border-radius:12px;color:var(--mute);transition:color .3s var(--ease-out),background .3s var(--ease-out),transform .2s var(--ease-spring);position:relative}
+.stp:hover{color:var(--ink);background:rgba(var(--accent-rgb),.06);transform:translateY(-1px)}
+.stp.on{color:var(--ink);background:rgba(var(--accent-rgb),.12)}
+.stp.on::before{content:"";position:absolute;bottom:-17px;left:50%;transform:translateX(-50%);width:8px;height:8px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 3px var(--card),0 0 12px rgba(var(--accent-rgb),.3);animation:pulseRing 2s ease-out infinite}
+@keyframes pulseRing{0%{box-shadow:0 0 0 3px var(--card),0 0 0 0 rgba(var(--accent-rgb),.4)}100%{box-shadow:0 0 0 3px var(--card),0 0 12px 0 rgba(var(--accent-rgb),0)}}
+.n{font-style:italic;font-size:24px;font-weight:600;color:var(--accent);min-width:28px}
+.stp:not(.on) .n{color:var(--mute)}
+.input-wrapper{position:relative;margin-bottom:28px}
+.input-wrapper > label{display:block;font-style:italic;color:var(--mute);margin-bottom:8px;font-size:16px;transition:color .2s var(--ease-out),transform .2s var(--ease-out),font-size .2s var(--ease-out);transform-origin:left top}
+.input-field{position:relative}
+.input-field > input,.input-field > textarea{display:block;width:100%;font:500 22px var(--f);color:var(--ink);background:var(--input-bg);border:1px solid var(--line);border-radius:12px;padding:16px 16px 16px 48px;transition:border-color .2s var(--ease-out),box-shadow .2s var(--ease-out),background .2s var(--ease-out);resize:vertical;min-height:56px}
+.input-field > textarea{min-height:100px;font:14px/1.7 var(--mono)}
+.input-field:has(input:focus),.input-field:has(textarea:focus){}
+.input-field > input:focus,.input-field > textarea:focus{outline:none;border-color:var(--accent);box-shadow:var(--focus-ring);background:#fff}
+.input-field > input::placeholder,.input-field > textarea::placeholder{color:#a9a39b;transition:opacity .2s var(--ease-out)}
+.input-field > input:focus::placeholder,.input-field > textarea:focus::placeholder{opacity:.5}
+.input-icon{position:absolute;left:16px;top:50%;transform:translateY(-50%);width:20px;height:20px;color:var(--mute);pointer-events:none;transition:color .2s var(--ease-out);z-index:1}
+.input-field:has(input:focus) .input-icon,.input-field:has(textarea:focus) .input-icon{color:var(--accent)}
+.input-wrapper:has(input:not(:placeholder-shown)) label,.input-wrapper:has(textarea:not(:placeholder-shown)) label,.input-wrapper:has(input:focus) label,.input-wrapper:has(textarea:focus) label{color:var(--accent);transform:translateY(-32px) scale(.8)}
+.note{border-left:3px solid var(--accent);padding:16px 20px;margin-bottom:32px;font-size:17px;color:#3b3732;background:rgba(var(--accent-rgb),.04);border-radius:0 12px 12px 0;position:relative}
+.note::before{content:"";position:absolute;left:-3px;top:50%;transform:translateY(-50%);width:8px;height:8px;border-radius:50%;background:var(--accent);box-shadow:0 0 12px rgba(var(--accent-rgb),.5)}
+.note b{font-weight:600;text-decoration:underline;text-underline-offset:3px;color:var(--ink)}
+code{font:13px var(--mono);background:rgba(var(--ink),.05);padding:3px 8px;border-radius:6px;border:1px solid var(--line)}
+.row{display:flex;gap:12px;flex-wrap:wrap}
+.row.stacked{flex-direction:column}
+.row.stacked .btn{width:100%}
+.btn{position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;gap:12px;width:100%;padding:18px 24px;background:var(--ink);color:var(--paper);font-size:21px;line-height:1.1;text-transform:uppercase;letter-spacing:.02em;border-radius:14px;z-index:0;transition:color .4s var(--ease-out),box-shadow .3s var(--ease-out),transform .2s var(--ease-spring),background .3s var(--ease-out);box-shadow:var(--shadow-sm)}
+.btn::before{content:"";position:absolute;inset:0;background:var(--paper);transform:translateY(101%);transition:transform .6s var(--ease-out);z-index:-1;border-radius:14px}
+.btn::after{content:"";position:absolute;inset:0;background:var(--ripple-color);transform:scale(0);border-radius:14px;opacity:0;transition:transform .4s var(--ease-out),opacity .1s;z-index:-1}
+.btn:hover:not(:disabled){color:var(--ink);box-shadow:var(--shadow-md);transform:translateY(-2px);background:transparent}
+.btn:hover:not(:disabled)::before{transform:none}
+.btn:active:not(:disabled){transform:translateY(0) scale(.98);box-shadow:var(--shadow-sm)}
+.btn:active:not(:disabled)::after{transform:scale(2.5);opacity:1;transition:transform 0s,opacity 0s}
+.btn:focus-visible{outline:none;box-shadow:var(--focus-ring),var(--shadow-md)}
+.btn:disabled{opacity:.5;cursor:not-allowed;transform:none;box-shadow:var(--shadow-sm)}
+.btn.ghost{background:transparent;color:var(--ink);box-shadow:inset 0 0 0 1px var(--line);width:auto;min-width:140px}
+.btn.ghost::before{background:var(--ink)}
+.btn.ghost:hover:not(:disabled){color:var(--paper)!important;box-shadow:none;background:var(--ink);transform:translateY(-2px)}
+.btn.ghost:active:not(:disabled){transform:translateY(0) scale(.98)}
+.btn.ghost:focus-visible{box-shadow:var(--focus-ring),inset 0 0 0 1px var(--ink)}
+.spin{width:20px;height:20px;flex:none;font-size:20px}
+.result{margin-top:36px;border-top:1px solid var(--line);padding-top:24px;animation:fadeIn .5s var(--ease-out) .2s both}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.result img{display:block;max-width:100%;max-height:340px;margin-top:16px;border:1px solid var(--line);border-radius:12px;background:var(--paper);box-shadow:var(--shadow-sm);transition:box-shadow .3s var(--ease-out),transform .3s var(--ease-out)}
+.result img:hover{box-shadow:var(--shadow-md);transform:scale(1.01)}
+.soon{text-align:center;padding:40px 20px}
+.soon p{color:#3b3732;max-width:30em;margin:0 auto;line-height:1.7}
+.soon .lab{justify-content:center;margin-bottom:16px}
 
-        /* Custom scrollbar */
-        ::-webkit-scrollbar { width: 4px; height: 4px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
-        .no-scrollbar::-webkit-scrollbar { display: none; }
-        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+/* TOAST NOTIFICATIONS */
+.toast-container{position:fixed;top:24px;right:24px;z-index:1000;display:flex;flex-direction:column;gap:10px;pointer-events:none;max-width:380px}
+.toast{display:flex;align-items:flex-start;gap:12px;padding:16px 20px;background:var(--card);border:1px solid var(--glass-border);border-radius:12px;box-shadow:var(--shadow-lg);backdrop-filter:saturate(180%) blur(24px);pointer-events:auto;animation:toastIn .4s var(--ease-spring);position:relative;overflow:hidden}
+.toast::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px}
+.toast.success::before{background:#3fb27f}
+.toast.error::before{background:#e85d5d}
+.toast.warning::before{background:#f5a623}
+.toast.info::before{background:var(--accent)}
+.toast-icon{flex-shrink:0;width:24px;height:24px;display:flex;align-items:center;justify-content:center}
+.toast.success .toast-icon{color:#3fb27f}
+.toast.error .toast-icon{color:#e85d5d}
+.toast.warning .toast-icon{color:#f5a623}
+.toast.info .toast-icon{color:var(--accent)}
+.toast-content{flex:1;min-width:0}
+.toast-title{font:600 15px/1.3 var(--f);color:var(--ink);margin-bottom:2px}
+.toast-message{font:14px/1.5 var(--mono);color:var(--mute)}
+.toast-close{flex-shrink:0;width:28px;height:28px;border-radius:8px;background:rgba(var(--ink),.05);color:var(--mute);display:flex;align-items:center;justify-content:center;transition:background .2s,color .2s}
+.toast-close:hover{background:rgba(var(--ink),.1);color:var(--ink)}
+.toast-progress{position:absolute;bottom:0;left:0;height:3px;background:currentColor;opacity:.3;transform-origin:left;animation:toastProgress linear forwards}
+@keyframes toastIn{from{opacity:0;transform:translateX(100%) scale(.95)}to{opacity:1;transform:translateX(0) scale(1)}}
+@keyframes toastProgress{from{transform:scaleX(1)}to{transform:scaleX(0)}}
+@media(prefers-reduced-motion:reduce){.toast{animation:none}.toast-progress{animation:none;transform:scaleX(0)}}
 
-        /* Animasi masuk & transisi view */
-        @keyframes fadeUp {
-            from { opacity: 0; transform: translateY(12px) scale(0.98); }
-            to { opacity: 1; transform: translateY(0) scale(1); }
-        }
+/* SKELETON LOADERS */
+.skeleton{background:linear-gradient(90deg,rgba(var(--ink),.06) 25%,rgba(var(--ink),.12) 50%,rgba(var(--ink),.06) 75%);background-size:200% 100%;animation:shimmer 1.5s ease-in-out infinite;border-radius:8px}
+@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+.skeleton-text{height:1.2em;margin:8px 0;border-radius:4px}
+.skeleton-title{height:2.5em;width:60%;margin:16px 0;border-radius:4px}
+.skeleton-input{height:56px;width:100%;border-radius:12px}
+.skeleton-btn{height:56px;width:100%;border-radius:14px}
+.skeleton-img{aspect-ratio:16/9;width:100%;border-radius:12px}
 
-        .animate-fade-up {
-            animation: fadeUp 0.4s cubic-bezier(0.22, 1, 0.36, 1) forwards;
-        }
+/* VALIDATION ERRORS */
+.input-field.invalid > input,.input-field.invalid > textarea{border-color:#e85d5d;box-shadow:0 0 0 3px rgba(232,93,93,.15)}
+.input-field.invalid .input-icon{color:#e85d5d}
+.error-msg{display:flex;align-items:center;gap:6px;margin-top:8px;font:13px/1 var(--mono);color:#e85d5d;animation:fadeIn .2s var(--ease-out)}
+.error-msg::before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor;flex-shrink:0}
 
-        /* Fokus ring kustom (Aksen Merah) */
-        input:focus, textarea:focus, select:focus {
-            border-color: var(--red) !important;
-            box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.15) !important;
-        }
+/* COPY BUTTON */
+.copy-btn{position:absolute;right:12px;top:50%;transform:translateY(-50%);width:32px;height:32px;border-radius:8px;background:rgba(var(--ink),.05);color:var(--mute);display:flex;align-items:center;justify-content:center;transition:background .2s,color .2s,transform .15s;opacity:0;pointer-events:none}
+.input-field:hover .copy-btn,.input-field:has(input:focus) .copy-btn,.input-field:has(textarea:focus) .copy-btn{opacity:1;pointer-events:auto}
+.copy-btn:hover{background:rgba(var(--ink),.1);color:var(--ink)}
+.copy-btn:active{transform:translateY(-50%) scale(.95)}
+.copy-btn.copied{background:rgba(63,178,127,.15);color:#3fb27f}
 
-        /* Custom SweetAlert2 Styling */
-        div.swal2-popup {
-            border-radius: 28px !important;
-            font-family: 'Inter', system-ui, sans-serif !important;
-            padding: 1.75rem !important;
-            border: 1px solid var(--border) !important;
-            box-shadow: 0 25px 50px -12px rgba(30, 27, 75, 0.15) !important;
-        }
-        .swal2-title {
-            color: var(--navy) !important;
-            font-weight: 800 !important;
-            font-size: 1.25rem !important;
-        }
-        .swal2-html-container {
-            color: var(--slate) !important;
-            font-size: 0.875rem !important;
-        }
-        .swal2-confirm {
-            border-radius: 16px !important;
-            font-weight: 700 !important;
-            font-size: 0.875rem !important;
-            padding: 0.75rem 1.5rem !important;
-        }
+/* PROGRESS BAR */
+.progress-bar{height:4px;background:var(--line);border-radius:2px;overflow:hidden;margin:16px 0}
+.progress-bar-fill{height:100%;width:0%;background:var(--accent);border-radius:2px;transition:width .3s var(--ease-out)}
+.progress-bar-fill.indeterminate{width:30%;animation:progressIndeterminate 1.5s ease-in-out infinite}
+@keyframes progressIndeterminate{0%{transform:translateX(-100%)}100%{transform:translateX(400%)}}
+
+/* VIEW TRANSITIONS */
+@media (prefers-reduced-motion: no-preference){
+  .view-container{view-transition-name:view-content}
+  ::view-transition-old(view-content),
+  ::view-transition-new(view-content){
+    animation-duration:.5s;
+    animation-timing-function:var(--ease-out)
+  }
+  ::view-transition-old(view-content){animation-name:fade-out,slide-out}
+  ::view-transition-new(view-content){animation-name:fade-in,slide-in}
+  @keyframes fade-out{from{opacity:1}to{opacity:0}}
+  @keyframes fade-in{from{opacity:0}to{opacity:1}}
+  @keyframes slide-out{from{transform:translateX(0)}to{transform:translateX(-40px)}}
+  @keyframes slide-in{from{transform:translateX(40px)}to{transform:translateX(0)}}
+}
+
+/* FOCUS MANAGEMENT */
+.focus-trap{position:relative}
+.focus-trap:focus-within{outline:none}
+
+/* COMMAND PALETTE */
+.cmd-palette{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);width:min(600px,90vw);background:var(--card);border:1px solid var(--glass-border);border-radius:16px;box-shadow:var(--shadow-xl);backdrop-filter:saturate(180%) blur(24px);z-index:2000;overflow:hidden;display:none;animation:cmdIn .3s var(--ease-spring)}
+.cmd-palette.open{display:block}
+@keyframes cmdIn{from{opacity:0;transform:translate(-50%,-60%) scale(.95)}to{opacity:1;transform:translate(-50%,-50%) scale(1)}}
+.cmd-backdrop{position:fixed;inset:0;background:rgba(21,19,17,.4);backdrop-filter:blur(4px);z-index:1999;display:none;animation:fadeIn .2s}
+.cmd-backdrop.open{display:block}
+.cmd-header{display:flex;align-items:center;gap:12px;padding:16px 20px;border-bottom:1px solid var(--glass-border)}
+.cmd-icon{width:36px;height:36px;border-radius:10px;background:rgba(var(--accent-rgb),.1);color:var(--accent);display:flex;align-items:center;justify-content:center}
+.cmd-search{flex:1;background:transparent;border:none;outline:none;font:500 18px var(--f);color:var(--ink);width:100%}
+.cmd-search::placeholder{color:var(--mute)}
+.cmd-shortcut{font:12px var(--mono);color:var(--mute);padding:4px 8px;background:rgba(var(--ink),.05);border-radius:6px}
+.cmd-list{max-height:360px;overflow:auto;padding:8px}
+.cmd-item{display:flex;align-items:center;gap:12px;padding:12px 16px;border-radius:10px;cursor:pointer;transition:background .15s}
+.cmd-item:hover,.cmd-item.selected{background:rgba(var(--accent-rgb),.08)}
+.cmd-item-icon{width:36px;height:36px;border-radius:8px;background:rgba(var(--ink),.05);display:flex;align-items:center;justify-content:center;color:var(--mute)}
+.cmd-item-content{flex:1}
+.cmd-item-title{font:500 15px var(--f);color:var(--ink)}
+.cmd-item-desc{font:12px var(--mono);color:var(--mute);margin-top:2px}
+.cmd-empty{padding:24px;text-align:center;color:var(--mute)}
+
+/* MOBILE NAV */
+.mnav{display:none}
+@media(max-width:820px){
+  .side{display:none}
+  .app{display:block}
+  main{padding-bottom:110px;align-items:start}
+  .mnav{
+    display:flex;
+    position:fixed;
+    left:0;right:0;bottom:0;
+    z-index:50;
+    background:var(--glass-bg);
+    backdrop-filter:saturate(180%) blur(20px);
+    border-top:1px solid var(--glass-border);
+    padding:8px 12px max(12px,env(safe-area-inset-bottom)) 12px;
+    gap:4px;
+  }
+  .mnav-indicator{
+    position:absolute;
+    bottom:calc(100% - 4px);
+    left:0;
+    height:4px;
+    border-radius:4px 4px 0 0;
+    background:var(--accent);
+    box-shadow:0 -2px 12px rgba(var(--accent-rgb),.4);
+    transition:transform .4s var(--ease-spring),width .3s var(--ease-out);
+    pointer-events:none;
+    z-index:1;
+  }
+  .mob-btn{
+    position:relative;
+    z-index:2;
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:4px;
+    padding:12px 8px;
+    border-radius:12px;
+    font-size:13px;
+    font-weight:500;
+    text-transform:uppercase;
+    letter-spacing:.02em;
+    color:var(--mute);
+    background:transparent;
+    transition:color .25s var(--ease-out),background .2s;
+  }
+  .mob-btn::before{content:"";position:absolute;inset:0;border-radius:12px;background:var(--accent);opacity:0;transition:opacity .2s}
+  .mob-btn:hover{color:var(--ink)}
+  .mob-btn:hover::before{opacity:.12}
+  .mob-btn:active::before{opacity:.2}
+  .mob-btn.on{color:var(--accent)}
+  .mob-btn.on::before{opacity:.15}
+  .mob-btn svg{width:22px;height:22px;stroke-width:2;transition:transform .2s var(--ease-spring)}
+  .mob-btn:active svg{transform:scale(.9)}
+  .mob-btn-label{display:block}
+}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition-duration:.01ms!important}}
+/* SweetAlert2 */
+div.swal2-popup{border-radius:0!important;background:var(--card)!important;font-family:var(--f)!important;border:1px solid var(--line)!important;box-shadow:0 30px 80px rgba(21,19,17,.25)!important;padding:2rem!important}
+.swal2-icon{display:none!important}
+.swal2-title{font:500 36px/1.05 var(--f)!important;text-transform:uppercase;color:var(--ink)!important}
+.swal2-html-container{font:500 20px/1.5 var(--f)!important;color:#3b3732!important}
+.swal2-confirm{border-radius:0!important;background:var(--ink)!important;box-shadow:none!important;font:500 20px var(--f)!important;text-transform:uppercase;padding:14px 30px!important}
+.swal2-timer-progress-bar{background:var(--ink)!important}
+.rcp{margin-top:14px;text-align:left}
+.rcp div{display:flex;justify-content:space-between;gap:20px;padding:12px 0;border-bottom:1px solid var(--line)}
+.rcp span{font-style:italic;color:var(--mute)}.rcp b{font:13px var(--mono);align-self:center}
+.rn{margin-top:18px;font-size:17px;font-style:italic;color:var(--mute)}
     </style>
 </head>
-<body class="min-h-screen flex flex-col md:flex-row selection:bg-red-100 selection:text-red-900 pb-24 md:pb-0">
-
+<body>
+<div class="app">
     <!-- DESKTOP SIDEBAR -->
-    <aside class="hidden md:flex w-72 bg-white border-r border-[var(--border)] flex-col justify-between p-6 shrink-0 z-20 h-screen sticky top-0">
+    <aside class="side" id="sidebar">
         <div>
-            <!-- Logo / Brand -->
-            <div class="flex items-center gap-3 mb-8 px-2">
-                <div class="w-9 h-9 rounded-2xl bg-[var(--red)] flex items-center justify-center text-white font-extrabold shadow-lg shadow-red-500/30">
-                    S
+            <div class="brand">
+                <div class="brand-icon" aria-hidden="true">
+                    <i class="fa-solid fa-code"></i>
                 </div>
-                <div>
-                    <h2 class="text-sm font-[800] text-[var(--navy)] tracking-tight">Developer Portal</h2>
-                    <p class="text-[11px] text-[var(--slate)]">SaaS Utility Dashboard</p>
+                <div class="brand-text">
+                    <b>TOOLS</b>
+                    <span>Kumpulan Tools & Utilitas</span>
                 </div>
             </div>
-
-            <!-- Navigation Menu -->
-            <nav class="space-y-1.5 text-xs font-semibold">
-                <button onclick="switchView('home')" id="nav-home" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-[var(--navy)] bg-[var(--surface-alt)] transition-all duration-300">
-                    <svg class="w-4 h-4 text-[var(--red)] shrink-0" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
-                    <span>Home (Alight Motion)</span>
+            <button class="sidebar-toggle" aria-label="Collapse sidebar" aria-expanded="true" onclick="toggleSidebar()">
+                <i class="fa-solid fa-chevron-left"></i>
+            </button>
+            <nav>
+                <button onclick="switchView('home')" id="nav-home" class="nav-btn on">
+                    <span class="nav-icon" aria-hidden="true"><i class="fa-solid fa-house"></i></span>
+                    <span class="nav-label">Home</span>
                 </button>
-                <button onclick="switchView('jarvis')" id="nav-jarvis" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-[var(--slate)] hover:bg-[var(--surface-alt)] hover:text-[var(--navy)] transition-all duration-300">
-                    <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                    <span>Jarvis Meme</span>
+                <button onclick="switchView('netflix')" id="nav-netflix" class="nav-btn">
+                    <span class="nav-icon" aria-hidden="true"><i class="fa-solid fa-circle-play"></i></span>
+                    <span class="nav-label">Netflix Token</span>
                 </button>
-                <button onclick="switchView('netflix')" id="nav-netflix" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-[var(--slate)] hover:bg-[var(--surface-alt)] hover:text-[var(--navy)] transition-all duration-300">
-                    <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
-                    <span>Netflix Token</span>
+                <button onclick="switchView('viu')" id="nav-viu" class="nav-btn">
+                    <span class="nav-icon" aria-hidden="true"><i class="fa-solid fa-tv"></i></span>
+                    <span class="nav-label">Viu Account</span>
                 </button>
-                <button onclick="switchView('viu')" id="nav-viu" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-[var(--slate)] hover:bg-[var(--surface-alt)] hover:text-[var(--navy)] transition-all duration-300">
-                    <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path><path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                    <span>Viu Account</span>
-                </button>
-                <button onclick="switchView('wareaction')" id="nav-wareaction" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-[var(--slate)] hover:bg-[var(--surface-alt)] hover:text-[var(--navy)] transition-all duration-300">
-                    <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>
-                    <span>WA Reaction</span>
+                <button onclick="switchView('wareaction')" id="nav-wareaction" class="nav-btn">
+                    <span class="nav-icon" aria-hidden="true"><i class="fa-solid fa-comment"></i></span>
+                    <span class="nav-label">WA Reaction</span>
                 </button>
             </nav>
         </div>
-
-        <!-- Footer Info Sidebar -->
-        <div class="pt-4 border-t border-[var(--border)] text-[11px] text-[var(--slate)] px-2">
-            <div class="flex items-center gap-2">
-                <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                <span>System Operational</span>
-            </div>
+        <div class="status"><i></i><span>System Operational</span></div>
+        <div class="user-badge hidden">
+            <div class="avatar">JD</div>
+            <div class="user-info"><b>John Doe</b><span>Premium</span></div>
         </div>
     </aside>
 
-    <!-- MOBILE FLOATING BOTTOM NAVBAR -->
-    <nav class="md:hidden fixed bottom-3 left-3 right-3 z-50 bg-white/95 backdrop-blur-xl border border-[var(--border)] rounded-full shadow-[0_10px_30px_rgba(30,27,75,0.15)] flex items-center justify-around px-3 py-2 overflow-x-auto no-scrollbar gap-1">
-        <button onclick="switchView('home')" id="mob-nav-home" class="mob-btn p-3 rounded-full text-[var(--red)] bg-[var(--surface-alt)] transition-all duration-300 shrink-0 shadow-sm">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+    <!-- MOBILE BOTTOM NAV -->
+    <nav class="mnav" aria-label="Navigasi utama">
+        <div class="mnav-indicator" aria-hidden="true"></div>
+        <button onclick="switchView('home')" id="mob-nav-home" class="mob-btn on" data-view="home">
+            <i class="fa-solid fa-house"></i>
+            <span class="mob-btn-label">Alight</span>
         </button>
-        <button onclick="switchView('jarvis')" id="mob-nav-jarvis" class="mob-btn p-3 rounded-full text-[var(--slate)] transition-all duration-300 shrink-0">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+        <button onclick="switchView('netflix')" id="mob-nav-netflix" class="mob-btn" data-view="netflix">
+            <i class="fa-solid fa-circle-play"></i>
+            <span class="mob-btn-label">Netflix</span>
         </button>
-        <button onclick="switchView('netflix')" id="mob-nav-netflix" class="mob-btn p-3 rounded-full text-[var(--slate)] transition-all duration-300 shrink-0">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+        <button onclick="switchView('viu')" id="mob-nav-viu" class="mob-btn" data-view="viu">
+            <i class="fa-solid fa-tv"></i>
+            <span class="mob-btn-label">Viu</span>
         </button>
-        <button onclick="switchView('viu')" id="mob-nav-viu" class="mob-btn p-3 rounded-full text-[var(--slate)] transition-all duration-300 shrink-0">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path><path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-        </button>
-        <button onclick="switchView('wareaction')" id="mob-nav-wareaction" class="mob-btn p-3 rounded-full text-[var(--slate)] transition-all duration-300 shrink-0">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>
+        <button onclick="switchView('wareaction')" id="mob-nav-wareaction" class="mob-btn" data-view="wareaction">
+            <i class="fa-solid fa-comment"></i>
+            <span class="mob-btn-label">WA</span>
         </button>
     </nav>
 
-    <!-- MAIN CONTENT CONTAINER -->
-    <main class="flex-1 flex items-center justify-center p-4 lg:p-8 overflow-y-auto">
-
+<main>
         <!-- VIEW 1: HOME (ALIGHT MOTION PRO) -->
-        <div id="view-home" class="view-container w-full max-w-md bg-white border border-[var(--border)] rounded-[32px] shadow-[0_20px_40px_-15px_rgba(30,27,75,0.07)] p-6 sm:p-8 relative animate-fade-up backdrop-blur-xl">
-            <div class="mb-6">
-                <div class="flex items-center gap-2.5 mb-1.5">
-                    <span class="relative flex h-2 w-2">
-                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
-                        <span class="relative inline-flex rounded-full h-2 w-2 bg-[var(--red)]"></span>
-                    </span>
-                    <span class="text-[11px] font-bold tracking-[0.1em] text-[var(--slate)] uppercase">Alight Motion Pro</span>
+        <section id="view-home" class="view view-container animate-fade-up">
+            <div class="stagger-in">
+                <p class="lab"><i class="dot"></i>Alight Motion Pro</p>
+                <h1>Portal Aktivasi <em>Lisensi</em></h1>
+                <p class="sub">Kelola keanggotaan dan verifikasi akun dengan cepat & aman.</p>
+                <div class="steps">
+                    <div id="step-1-indicator" class="stp on"><span class="n">1</span><span>Kirim Link</span></div>
+                    <div id="step-2-indicator" class="stp"><span class="n">2</span><span>Verifikasi</span></div>
                 </div>
-                <h1 class="text-2xl font-[800] text-[var(--navy)] tracking-tight">Portal Aktivasi Lisensi</h1>
-                <p class="text-sm text-[var(--slate)] mt-1">Kelola keanggotaan dan verifikasi akun dengan cepat & aman.</p>
-            </div>
-
-            <!-- Step Indicator -->
-            <div class="grid grid-cols-2 gap-1.5 bg-[#f6f7fc] p-1.5 rounded-2xl border border-[#e5e8f3] mb-6 text-xs font-semibold">
-                <div id="step-1-indicator" class="flex items-center justify-center gap-2 py-2.5 rounded-xl bg-white text-[var(--navy)] shadow-sm transition-all duration-300">
-                    <span class="w-5 h-5 rounded-full bg-[var(--navy)] text-white text-[10px] flex items-center justify-center font-bold">1</span>
-                    <span>Kirim Link</span>
-                </div>
-                <div id="step-2-indicator" class="flex items-center justify-center gap-2 py-2.5 rounded-xl text-zinc-400 transition-all duration-300">
-                    <span class="w-5 h-5 rounded-full bg-zinc-200 text-zinc-600 text-[10px] flex items-center justify-center font-bold">2</span>
-                    <span>Verifikasi</span>
-                </div>
-            </div>
-
-            <!-- Stage 1 Form -->
-            <form id="form-send" class="space-y-4">
-                <div>
-                    <label for="email" class="block text-xs font-bold text-[var(--navy)] uppercase tracking-wider mb-2">Email Target</label>
-                    <input 
-                        type="email" 
-                        id="email" 
-                        required 
-                        placeholder="namaemail@gmail.com"
-                        class="w-full bg-[#f6f7fc] border border-[#e5e8f3] rounded-2xl px-4 py-3 text-sm text-[var(--navy)] placeholder-zinc-400 focus:outline-none transition"
-                    >
-                </div>
-                <button 
-                    type="submit" 
-                    id="btn-send"
-                    class="w-full bg-[var(--red)] hover:bg-[var(--red-dark)] text-white font-bold py-3.5 px-6 rounded-2xl text-sm transition-all duration-200 shadow-lg shadow-red-500/25 cursor-pointer flex items-center justify-center gap-2 hover:-translate-y-0.5 active:translate-y-0"
-                >
-                    <span>Kirim Magic Link</span>
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"></path></svg>
-                </button>
-            </form>
-
-            <!-- Stage 2 Form (Hidden) -->
-            <form id="form-verify" class="space-y-4 hidden">
-                <div class="bg-[var(--surface-alt)] border border-[var(--border)] p-4 rounded-2xl text-xs text-[var(--slate)] leading-relaxed">
-                    Magic link telah dikirim ke <span id="target-email-label" class="text-[var(--navy)] font-bold underline"></span>. Salin URL lengkap atau kode <code class="bg-white px-1.5 py-0.5 rounded text-[var(--red)] font-mono border border-[var(--border)]">oobCode</code> di bawah ini.
-                </div>
-                <div>
-                    <label for="magicLink" class="block text-xs font-bold text-[var(--navy)] uppercase tracking-wider mb-2">Magic Link / oobCode</label>
-                    <textarea 
-                        id="magicLink" 
-                        rows="3" 
-                        required 
-                        placeholder="https://alight-creative.firebaseapp.com/__/auth/action?mode=signIn&oobCode=..."
-                        class="w-full bg-[#f6f7fc] border border-[#e5e8f3] rounded-2xl p-3.5 text-xs text-[var(--navy)] placeholder-zinc-400 focus:outline-none transition font-mono resize-none leading-relaxed"
-                    ></textarea>
-                </div>
-                <div class="flex gap-2.5">
-                    <button 
-                        type="button" 
-                        id="btn-back"
-                        class="w-1/3 bg-[#f6f7fc] hover:bg-zinc-100 text-[var(--navy)] font-bold py-3 rounded-2xl text-xs transition border border-[var(--border)] cursor-pointer"
-                    >
-                        Kembali
-                    </button>
-                    <button 
-                        type="submit" 
-                        id="btn-verify"
-                        class="w-2/3 bg-[var(--red)] hover:bg-[var(--red-dark)] text-white font-bold py-3 px-4 rounded-2xl text-xs transition-all duration-200 shadow-lg shadow-red-500/25 cursor-pointer flex items-center justify-center gap-2 hover:-translate-y-0.5"
-                    >
-                        <span>Verifikasi & Aktifkan</span>
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"></path></svg>
-                    </button>
-                </div>
-            </form>
-        </div>
-
-        <!-- VIEW 2: JARVIS MEME -->
-        <div id="view-jarvis" class="view-container hidden w-full max-w-lg bg-white border border-[var(--border)] rounded-[32px] shadow-[0_20px_40px_-15px_rgba(30,27,75,0.07)] p-6 sm:p-8 relative animate-fade-up">
-            <div class="mb-6">
-                <h1 class="text-2xl font-[800] text-[var(--navy)] tracking-tight">Jarvis Meme Generator</h1>
-                <p class="text-sm text-[var(--slate)] mt-1">Buat meme Jarvis kustom secara instan.</p>
-            </div>
-            <form id="form-jarvis" class="space-y-4">
-                <div>
-                    <label class="block text-xs font-bold text-[var(--navy)] uppercase tracking-wider mb-2">Teks Meme</label>
-                    <input type="text" id="jarvis-text" required placeholder="jarvis tolong itu anunya..." class="w-full bg-[#f6f7fc] border border-[#e5e8f3] rounded-2xl px-4 py-3 text-sm text-[var(--navy)] placeholder-zinc-400 focus:outline-none transition">
-                </div>
-                <button type="submit" id="btn-jarvis" class="w-full bg-[var(--red)] hover:bg-[var(--red-dark)] text-white font-bold py-3.5 rounded-2xl text-sm transition shadow-lg shadow-red-500/25 cursor-pointer flex items-center justify-center gap-2">
-                    <span>Generate Jarvis Meme</span>
-                </button>
-            </form>
-            <div id="result-jarvis" class="mt-6 hidden text-center space-y-3">
-                <p class="text-xs font-bold text-[var(--navy)] uppercase tracking-wider">Hasil Meme:</p>
-                <div class="p-3 bg-[#f6f7fc] rounded-2xl border border-[var(--border)] inline-block">
-                    <img id="img-jarvis-result" src="" alt="Jarvis Meme" class="max-h-60 rounded-xl mx-auto object-contain">
-                </div>
-            </div>
-        </div>
-
-        <!-- VIEW 3: NETFLIX TOKEN -->
-        <div id="view-netflix" class="view-container hidden w-full max-w-md bg-white border border-[var(--border)] rounded-[32px] shadow-[0_20px_40px_-15px_rgba(30,27,75,0.07)] p-8 text-center animate-fade-up">
-            <div class="w-12 h-12 bg-red-100 text-red-600 rounded-2xl flex items-center justify-center mx-auto mb-4 font-bold">N</div>
-            <h1 class="text-xl font-[800] text-[var(--navy)]">Netflix Token</h1>
-            <p class="text-sm text-[var(--slate)] mt-2">Fitur dan integrasi API untuk Netflix Token sedang dalam tahap pengembangan. Silakan cek kembali nanti.</p>
-        </div>
-
-        <!-- VIEW 4: VIU ACCOUNT -->
-        <div id="view-viu" class="view-container hidden w-full max-w-md bg-white border border-[var(--border)] rounded-[32px] shadow-[0_20px_40px_-15px_rgba(30,27,75,0.07)] p-8 text-center animate-fade-up">
-            <div class="w-12 h-12 bg-amber-100 text-amber-600 rounded-2xl flex items-center justify-center mx-auto mb-4 font-bold">V</div>
-            <h1 class="text-xl font-[800] text-[var(--navy)]">Viu Account</h1>
-            <p class="text-sm text-[var(--slate)] mt-2">Fitur dan integrasi API untuk Viu Account sedang dalam tahap pengembangan. Silakan cek kembali nanti.</p>
-        </div>
-
-        <!-- VIEW 5: WA REACTION -->
-        <div id="view-wareaction" class="view-container hidden w-full max-w-md bg-white border border-[var(--border)] rounded-[32px] shadow-[0_20px_40px_-15px_rgba(30,27,75,0.07)] p-8 text-center animate-fade-up">
-            <div class="w-12 h-12 bg-emerald-100 text-emerald-600 rounded-2xl flex items-center justify-center mx-auto mb-4 font-bold">WA</div>
-            <h1 class="text-xl font-[800] text-[var(--navy)]">WA Reaction</h1>
-            <p class="text-sm text-[var(--slate)] mt-2">Fitur dan integrasi API untuk WhatsApp Reaction sedang dalam tahap pengembangan. Silakan cek kembali nanti.</p>
-        </div>
-
-    </main>
-
-    <script>
-        // Switch View dengan Animasi Smooth
-        function switchView(viewId) {
-            document.querySelectorAll('.view-container').forEach(el => {
-                el.classList.add('hidden');
-                el.classList.remove('animate-fade-up');
-            });
-
-            const activeView = document.getElementById('view-' + viewId);
-            if (activeView) {
-                activeView.classList.remove('hidden');
-                void activeView.offsetWidth;
-                activeView.classList.add('animate-fade-up');
-            }
-
-            // Update Desktop Sidebar Buttons
-            document.querySelectorAll('.nav-btn').forEach(btn => {
-                btn.className = "nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-[var(--slate)] hover:bg-[var(--surface-alt)] hover:text-[var(--navy)] transition-all duration-300";
-                const svg = btn.querySelector('svg');
-                if (svg) svg.classList.remove('text-[var(--red)]');
-            });
-            const activeDesktopBtn = document.getElementById('nav-' + viewId);
-            if (activeDesktopBtn) {
-                activeDesktopBtn.className = "nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-[var(--navy)] bg-[var(--surface-alt)] transition-all duration-300 font-bold";
-                const svg = activeDesktopBtn.querySelector('svg');
-                if (svg) svg.classList.add('text-[var(--red)]');
-            }
-
-            // Update Mobile Bottom Navbar Buttons
-            document.querySelectorAll('.mob-btn').forEach(btn => {
-                btn.className = "mob-btn p-3 rounded-full text-[var(--slate)] transition-all duration-300 shrink-0";
-            });
-            const activeMobBtn = document.getElementById('mob-nav-' + viewId);
-            if (activeMobBtn) {
-                activeMobBtn.className = "mob-btn p-3 rounded-full text-[var(--red)] bg-[var(--surface-alt)] transition-all duration-300 shrink-0 shadow-sm";
-            }
-        }
-
-        let currentEmail = '';
-
-        const formSend = document.getElementById('form-send');
-        const formVerify = document.getElementById('form-verify');
-        const emailInput = document.getElementById('email');
-        const magicLinkInput = document.getElementById('magicLink');
-        const btnSend = document.getElementById('btn-send');
-        const btnVerify = document.getElementById('btn-verify');
-        const btnBack = document.getElementById('btn-back');
-        const targetEmailLabel = document.getElementById('target-email-label');
-        const step1Ind = document.getElementById('step-1-indicator');
-        const step2Ind = document.getElementById('step-2-indicator');
-
-        function setStep(step) {
-            if (step === 2) {
-                step1Ind.className = "flex items-center justify-center gap-2 py-2.5 rounded-xl text-zinc-400 transition-all duration-300";
-                step1Ind.querySelector('span').className = "w-5 h-5 rounded-full bg-zinc-200 text-zinc-600 text-[10px] flex items-center justify-center font-bold";
-                
-                step2Ind.className = "flex items-center justify-center gap-2 py-2.5 rounded-xl bg-white text-[var(--navy)] shadow-sm transition-all duration-300";
-                step2Ind.querySelector('span').className = "w-5 h-5 rounded-full bg-[var(--navy)] text-white text-[10px] flex items-center justify-center font-bold";
-            } else {
-                step1Ind.className = "flex items-center justify-center gap-2 py-2.5 rounded-xl bg-white text-[var(--navy)] shadow-sm transition-all duration-300";
-                step1Ind.querySelector('span').className = "w-5 h-5 rounded-full bg-[var(--navy)] text-white text-[10px] flex items-center justify-center font-bold";
-                
-                step2Ind.className = "flex items-center justify-center gap-2 py-2.5 rounded-xl text-zinc-400 transition-all duration-300";
-                step2Ind.querySelector('span').className = "w-5 h-5 rounded-full bg-zinc-200 text-zinc-600 text-[10px] flex items-center justify-center font-bold";
-            }
-        }
-
-        function showAlert(msg, isSuccess) {
-            Swal.fire({
-                icon: isSuccess ? 'success' : 'error',
-                title: isSuccess ? 'Berhasil' : 'Gagal',
-                text: msg,
-                timer: 3500,
-                timerProgressBar: true,
-                showConfirmButton: false
-            });
-        }
-
-        function showSuccessResultModal(data) {
-            const validUntilStr = data.validUntil 
-                ? new Date(data.validUntil).toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' }) 
-                : '-';
-
-            Swal.fire({
-                icon: 'success',
-                title: 'Aktivasi Berhasil!',
-                html: `
-                    <div class="mt-3 bg-[#f6f7fc] p-4 rounded-2xl border border-[#e5e8f3] text-xs font-mono text-left space-y-2.5">
-                        <div class="flex justify-between border-b border-[#e5e8f3] pb-2">
-                            <span class="text-zinc-400">Status:</span>
-                            <span class="text-emerald-600 font-bold">${data.membershipStatus || 'PREMIUM_ACTIVE'}</span>
-                        </div>
-                        <div class="flex justify-between border-b border-[#e5e8f3] pb-2">
-                            <span class="text-zinc-400">Plan:</span>
-                            <span class="text-[#1e1b4b] font-bold">${data.planName || '-'}</span>
-                        </div>
-                        <div class="flex justify-between border-b border-[#e5e8f3] pb-2">
-                            <span class="text-zinc-400">Order ID:</span>
-                            <span class="text-[#1e1b4b] font-semibold">${data.orderId || '-'}</span>
-                        </div>
-                        <div class="flex justify-between">
-                            <span class="text-zinc-400">Valid Until:</span>
-                            <span class="text-[#1e1b4b] font-semibold">${validUntilStr}</span>
+                <!-- Stage 1 Form -->
+<form id="form-send">
+                    <div class="input-wrapper">
+                        <label for="email">Email target</label>
+                        <div class="input-field">
+                            <i class="input-icon fa-solid fa-envelope" aria-hidden="true"></i>
+                            <input type="email" id="email" required placeholder="namaemail@gmail.com" autocomplete="email">
                         </div>
                     </div>
-                    <p class="text-[11px] text-zinc-400 mt-4">Halaman akan di-refresh otomatis dalam 5 detik...</p>
-                `,
-                confirmButtonText: 'Proses Akun Lain',
-                confirmButtonColor: '#1e1b4b',
-                timer: 5000,
-                timerProgressBar: true
-            }).then(() => {
-                location.reload();
-            });
+                    <div class="progress-bar" id="send-progress" hidden><div class="progress-bar-fill"></div></div>
+                    <button type="submit" id="btn-send" class="btn"><span>Kirim Magic Link</span></button>
+                </form>
+                <!-- Stage 2 Form (Hidden) -->
+                <form id="form-verify" class="hidden">
+                    <p class="note">Magic link telah dikirim ke <b id="target-email-label"></b>. Salin URL lengkap atau kode <code>oobCode</code> di bawah ini.</p>
+                    <div class="input-wrapper">
+                        <label for="magicLink">Magic link / oobCode</label>
+                        <div class="input-field">
+                            <i class="input-icon fa-solid fa-link" aria-hidden="true"></i>
+                            <textarea id="magicLink" rows="3" required placeholder="https://alight-creative.firebaseapp.com/__/auth/action?mode=signIn&oobCode=..."></textarea>
+                            <button type="button" class="copy-btn" data-target="magicLink" aria-label="Salin magic link"><i class="fa-solid fa-copy"></i></button>
+                        </div>
+                    </div>
+                    <div class="progress-bar" id="verify-progress" hidden><div class="progress-bar-fill indeterminate"></div></div>
+<div class="row stacked">
+                        <button type="submit" id="btn-verify" class="btn"><span>Verifikasi & Aktifkan</span></button>
+                        <button type="button" id="btn-back" class="btn ghost">Kembali</button>
+                    </div>
+                </form>
+            </div>
+        </section>
+
+        <!-- VIEW 3-5: SEGERA HADIR -->
+        <section id="view-netflix" class="view view-container soon hidden animate-fade-up">
+            <div class="stagger-in">
+                <p class="lab">Segera hadir</p>
+                <h1>Netflix <em>Token</em></h1>
+                <p>Fitur dan integrasi API untuk Netflix Token sedang dalam tahap pengembangan. Silakan cek kembali nanti.</p>
+            </div>
+        </section>
+        <section id="view-viu" class="view view-container soon hidden animate-fade-up">
+            <div class="stagger-in">
+                <p class="lab">Segera hadir</p>
+                <h1>Viu <em>Account</em></h1>
+                <p>Fitur dan integrasi API untuk Viu Account sedang dalam tahap pengembangan. Silakan cek kembali nanti.</p>
+            </div>
+        </section>
+        <section id="view-wareaction" class="view view-container soon hidden animate-fade-up">
+            <div class="stagger-in">
+                <p class="lab">Segera hadir</p>
+                <h1>WA <em>Reaction</em></h1>
+                <p>Fitur dan integrasi API untuk WhatsApp Reaction sedang dalam tahap pengembangan. Silakan cek kembali nanti.</p>
+            </div>
+        </section>
+</main>
+
+    <!-- TOAST CONTAINER -->
+    <div class="toast-container" id="toast-container" aria-live="polite" aria-atomic="true"></div>
+
+    <!-- COMMAND PALETTE -->
+    <div class="cmd-backdrop" id="cmd-backdrop" aria-hidden="true"></div>
+    <div class="cmd-palette" id="cmd-palette" role="dialog" aria-label="Command Palette" aria-hidden="true">
+        <div class="cmd-header">
+            <div class="cmd-icon"><i class="fa-solid fa-command"></i></div>
+            <input type="search" class="cmd-search" id="cmd-search" placeholder="Cari perintah atau navigasi..." autocomplete="off" spellcheck="false">
+            <kbd class="cmd-shortcut">⌘K</kbd>
+        </div>
+        <div class="cmd-list" id="cmd-list"></div>
+    </div>
+
+</div>
+
+<script>
+/* ==========================================================================
+   STATE MANAGEMENT - Simple Pub/Sub Store
+   ========================================================================== */
+const Store = (() => {
+  const state = {};
+  const listeners = new Map();
+
+  return {
+    get(key) { return state[key]; },
+    set(key, value) {
+      const old = state[key];
+      state[key] = value;
+      if (old !== value) this.emit(key, value, old);
+    },
+    on(key, cb) {
+      if (!listeners.has(key)) listeners.set(key, new Set());
+      listeners.get(key).add(cb);
+      return () => listeners.get(key)?.delete(cb);
+    },
+    emit(key, value, old) {
+      listeners.get(key)?.forEach(cb => cb(value, old));
+    },
+    subscribe(cb) {
+      const keys = Object.keys(state);
+      keys.forEach(k => cb(k, state[k]));
+      return this.on('*', cb);
+    }
+  };
+})();
+
+/* ==========================================================================
+   API LAYER - With Retry, Timeout, Error Normalization
+   ========================================================================== */
+const API = (() => {
+  const DEFAULT_TIMEOUT = 15000;
+  const MAX_RETRIES = 2;
+  const RETRY_DELAY = 1000;
+
+  async function request(url, options = {}) {
+    const { timeout = DEFAULT_TIMEOUT, retries = MAX_RETRIES, ...fetchOptions } = options;
+    const controller = new AbortController();
+    const id = setTimeout(() => controller.abort(), timeout);
+
+    let lastError;
+    for (let attempt = 0; attempt <= retries; attempt++) {
+      try {
+        const res = await fetch(url, { ...fetchOptions, signal: controller.signal });
+        clearTimeout(id);
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok) throw new APIError(res.status, data.message || 'Request failed', data);
+        return data;
+      } catch (err) {
+        clearTimeout(id);
+        lastError = err;
+        if (attempt < retries && (err.name === 'AbortError' || err instanceof TypeError || (err instanceof APIError && err.status >= 500))) {
+          await new Promise(r => setTimeout(r, RETRY_DELAY * (attempt + 1)));
+          continue;
         }
+        break;
+      }
+    }
+    throw lastError instanceof APIError ? lastError : new APIError(0, lastError.message || 'Network error');
+  }
 
-        const spinnerSvg = `
-            <svg class="animate-spin h-4 w-4 text-white shrink-0" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-            </svg>
-        `;
+  class APIError extends Error {
+    constructor(status, message, data = {}) {
+      super(message);
+      this.name = 'APIError';
+      this.status = status;
+      this.data = data;
+    }
+  }
 
-        // Alight Motion Stage 1
-        formSend.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            currentEmail = emailInput.value.trim();
-            btnSend.disabled = true;
-            btnSend.innerHTML = `${spinnerSvg}<span>Mengirim...</span>`;
+  return {
+    sendLink: (email) => request('https://satriam.satriadeveloperz.workers.dev/api/satriam/send-link', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email })
+    }),
+    verifyLink: (email, magicLink) => request('https://satriam.satriadeveloperz.workers.dev/api/satriam/verify-link', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, magicLink })
+    }),
+    APIError
+  };
+})();
 
-            try {
-                const res = await fetch('https://satriam.satriadeveloperz.workers.dev/api/satriam/send-link', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email: currentEmail })
-                });
-                const data = await res.json();
-                if (res.ok && data.success) {
-                    showAlert(data.message, true);
-                    targetEmailLabel.textContent = currentEmail;
-                    formSend.classList.add('hidden');
-                    formVerify.classList.remove('hidden');
-                    setStep(2);
-                } else {
-                    showAlert(data.message || 'Gagal mengirim link.', false);
-                }
-            } catch (err) {
-                showAlert('Kesalahan koneksi: ' + err.message, false);
-            } finally {
-                btnSend.disabled = false;
-                btnSend.innerHTML = `<span>Kirim Magic Link</span>`;
-            }
-        });
+/* ==========================================================================
+   TOAST COMPONENT - Non-blocking notifications
+   ========================================================================== */
+const Toast = (() => {
+  const container = document.getElementById('toast-container');
+  const icons = {
+    success: '<i class="fa-solid fa-circle-check"></i>',
+    error: '<i class="fa-solid fa-circle-xmark"></i>',
+    warning: '<i class="fa-solid fa-triangle-exclamation"></i>',
+    info: '<i class="fa-solid fa-circle-info"></i>'
+  };
 
-        btnBack.addEventListener('click', () => {
-            formVerify.classList.add('hidden');
-            formSend.classList.remove('hidden');
-            setStep(1);
-        });
+  function show(message, type = 'info', title = '', duration = 4000) {
+    const toast = document.createElement('div');
+    toast.className = `toast ${type}`;
+    toast.innerHTML = `
+      <div class="toast-icon">${icons[type]}</div>
+      <div class="toast-content">
+        ${title ? `<div class="toast-title">${title}</div>` : ''}
+        <div class="toast-message">${message}</div>
+      </div>
+      <button class="toast-close" aria-label="Tutup"><i class="fa-solid fa-xmark"></i></button>
+      <div class="toast-progress" style="--duration:${duration}ms"></div>
+    `;
 
-        // Alight Motion Stage 2
-        formVerify.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            btnVerify.disabled = true;
-            btnVerify.innerHTML = `${spinnerSvg}<span>Memproses...</span>`;
+    const progress = toast.querySelector('.toast-progress');
+    progress.style.animationDuration = `${duration}ms`;
 
-            try {
-                const res = await fetch('https://satriam.satriadeveloperz.workers.dev/api/satriam/verify-link', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email: currentEmail, magicLink: magicLinkInput.value.trim() })
-                });
-                const data = await res.json();
-                if (res.ok && data.success) {
-                    showSuccessResultModal(data);
-                } else {
-                    showAlert(data.message || 'Verifikasi gagal.', false);
-                }
-            } catch (err) {
-                showAlert('Kesalahan koneksi: ' + err.message, false);
-            } finally {
-                btnVerify.disabled = false;
-                btnVerify.innerHTML = `<span>Verifikasi & Aktifkan</span>`;
-            }
-        });
+    const close = () => {
+      toast.style.animation = 'toastIn .3s var(--ease-out) reverse';
+      setTimeout(() => toast.remove(), 300);
+    };
 
-        // JARVIS MEME API HANDLER
-        document.getElementById('form-jarvis').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const text = encodeURIComponent(document.getElementById('jarvis-text').value.trim());
-            const btn = document.getElementById('btn-jarvis');
-            btn.disabled = true;
-            btn.innerHTML = `${spinnerSvg}<span>Generating...</span>`;
+    toast.querySelector('.toast-close').addEventListener('click', close);
+    toast.addEventListener('mouseenter', () => progress.style.animationPlayState = 'paused');
+    toast.addEventListener('mouseleave', () => progress.style.animationPlayState = 'running');
 
-            try {
-                const jarvisUrl = `https://api.synoxcloud.xyz/canvas/jarvis-meme?text=${text}&apikey=FREE`;
-                document.getElementById('img-jarvis-result').src = jarvisUrl;
-                document.getElementById('result-jarvis').classList.remove('hidden');
-                showAlert('Jarvis Meme berhasil dibuat!', true);
-            } catch (err) {
-                showAlert('Gagal membuat meme.', false);
-            } finally {
-                btn.disabled = false;
-                btn.innerHTML = `<span>Generate Jarvis Meme</span>`;
-            }
-        });
-    </script>
+    container.appendChild(toast);
+    setTimeout(close, duration);
+    return close;
+  }
+
+  return {
+    success: (msg, title = 'Berhasil') => show(msg, 'success', title),
+    error: (msg, title = 'Gagal') => show(msg, 'error', title),
+    warning: (msg, title = 'Peringatan') => show(msg, 'warning', title),
+    info: (msg, title = 'Info') => show(msg, 'info', title)
+  };
+})();
+
+/* ==========================================================================
+   VALIDATION MODULE - Real-time form validation
+   ========================================================================== */
+const Validation = (() => {
+  const rules = {
+    email: (v) => v.includes('@') && v.includes('.') ? null : 'Format email tidak valid',
+    required: (v) => v.trim() ? null : 'Field ini wajib diisi',
+    minLength: (min) => (v) => v.trim().length >= min ? null : `Minimal ${min} karakter`
+  };
+
+  function validateField(input, validators) {
+    const field = input.closest('.input-field');
+    const wrapper = input.closest('.input-wrapper');
+    let errorEl = wrapper.querySelector('.error-msg');
+    let isValid = true;
+
+    for (const validator of validators) {
+      const err = validator(input.value);
+      if (err) {
+        isValid = false;
+        if (!errorEl) {
+          errorEl = document.createElement('div');
+          errorEl.className = 'error-msg';
+          wrapper.appendChild(errorEl);
+        }
+        errorEl.textContent = err;
+        break;
+      }
+    }
+
+    if (isValid && errorEl) errorEl.remove();
+    field?.classList.toggle('invalid', !isValid);
+    return isValid;
+  }
+
+  function attachValidation(input, validators) {
+    const debounced = debounce(() => validateField(input, validators), 300);
+    input.addEventListener('input', debounced);
+    input.addEventListener('blur', () => validateField(input, validators));
+    return () => input.removeEventListener('input', debounced);
+  }
+
+  function debounce(fn, ms) {
+    let t; return (...args) => { clearTimeout(t); t = setTimeout(() => fn(...args), ms); };
+  }
+
+  return { validateField, attachValidation, rules };
+})();
+
+/* ==========================================================================
+   COPY TO CLIPBOARD
+   ========================================================================== */
+const Clipboard = (() => {
+  async function copy(text, btn) {
+    try {
+      await navigator.clipboard.writeText(text);
+      if (btn) {
+        btn.classList.add('copied');
+        btn.setAttribute('aria-label', 'Tersalin!');
+        const icon = btn.querySelector('i');
+        if (icon) { icon.className = 'fa-solid fa-check'; }
+        setTimeout(() => {
+          btn.classList.remove('copied');
+          btn.setAttribute('aria-label', 'Salin');
+          if (icon) icon.className = 'fa-solid fa-copy';
+        }, 2000);
+      }
+      Toast.success('Tersalin ke clipboard');
+      return true;
+    } catch (err) {
+      Toast.error('Gagal menyalin');
+      return false;
+    }
+  }
+
+  function init() {
+    document.querySelectorAll('.copy-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const targetId = btn.dataset.target;
+        const target = document.getElementById(targetId);
+        if (target) copy(target.value, btn);
+      });
+    });
+  }
+
+  return { copy, init };
+})();
+
+/* ==========================================================================
+   SKELETON LOADER
+   ========================================================================== */
+const Skeleton = (() => {
+  const templates = {
+    form: () => `
+      <div class="skeleton skeleton-title"></div>
+      <div class="skeleton skeleton-text"></div>
+      <div class="skeleton skeleton-text" style="width:80%"></div>
+      <div class="skeleton skeleton-input"></div>
+      <div class="skeleton skeleton-btn" style="margin-top:16px"></div>
+    `,
+    result: () => `
+      <div class="skeleton skeleton-img"></div>
+    `
+  };
+
+  function show(container, type = 'form') {
+    container.innerHTML = templates[type]?.() || templates.form();
+    container.classList.remove('hidden');
+  }
+
+  function hide(container) {
+    container.classList.add('hidden');
+    container.innerHTML = '';
+  }
+
+  return { show, hide };
+})();
+
+/* ==========================================================================
+   VIEW MANAGER - With View Transitions API
+   ========================================================================== */
+const ViewManager = (() => {
+  const views = ['home', 'netflix', 'viu', 'wareaction'];
+  let currentView = 'home';
+  let transitioning = false;
+
+  function supportsViewTransitions() {
+    return document.startViewTransition && !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  }
+
+  async function switchView(viewId) {
+    if (!views.includes(viewId) || transitioning) return;
+    transitioning = true;
+
+    const oldView = document.getElementById(`view-${currentView}`);
+    const newView = document.getElementById(`view-${viewId}`);
+
+    if (!newView) { transitioning = false; return; }
+
+    const doTransition = async () => {
+      document.querySelectorAll('.view-container').forEach(el => el.classList.add('hidden'));
+      newView.classList.remove('hidden');
+
+      // Re-trigger stagger
+      const stagger = newView.querySelector('.stagger-in');
+      if (stagger) { stagger.style.animation = 'none'; stagger.offsetHeight; stagger.style.animation = ''; }
+
+      updateNav(viewId);
+      currentView = viewId;
+      Store.set('currentView', viewId);
+      transitioning = false;
+    };
+
+    if (supportsViewTransitions()) {
+      try {
+        await document.startViewTransition(doTransition).finished;
+      } catch { await doTransition(); }
+    } else {
+      await doTransition();
+    }
+  }
+
+  function updateNav(viewId) {
+    document.querySelectorAll('.nav-btn').forEach(btn => btn.className = 'nav-btn');
+    document.getElementById(`nav-${viewId}`)?.classList.add('on');
+
+    document.querySelectorAll('.mob-btn').forEach(btn => btn.className = 'mob-btn');
+    document.getElementById(`mob-nav-${viewId}`)?.classList.add('on');
+
+    updateMobileIndicator(viewId);
+    if (navigator.vibrate) navigator.vibrate(8);
+  }
+
+  function init() {
+    views.forEach(v => {
+      document.getElementById(`nav-${v}`)?.addEventListener('click', () => switchView(v));
+      document.getElementById(`mob-nav-${v}`)?.addEventListener('click', () => switchView(v));
+    });
+
+    document.addEventListener('DOMContentLoaded', () => {
+      updateMobileIndicator('home');
+      window.addEventListener('resize', () => updateMobileIndicator(document.querySelector('.mob-btn.on')?.dataset.view || 'home'));
+    });
+
+    Store.on('currentView', v => currentView = v);
+  }
+
+  function getCurrent() { return currentView; }
+
+  return { switchView, init, getCurrent };
+})();
+
+/* ==========================================================================
+   MOBILE INDICATOR
+   ========================================================================== */
+function updateMobileIndicator(viewId) {
+  const activeBtn = document.getElementById(`mob-nav-${viewId}`);
+  const indicator = document.querySelector('.mnav-indicator');
+  if (!activeBtn || !indicator) return;
+  const navRect = activeBtn.parentElement.getBoundingClientRect();
+  const btnRect = activeBtn.getBoundingClientRect();
+  indicator.style.transform = `translateX(${btnRect.left - navRect.left}px)`;
+  indicator.style.width = `${btnRect.width}px`;
+}
+
+/* ==========================================================================
+   SIDEBAR TOGGLE
+   ========================================================================== */
+function toggleSidebar() {
+  const sidebar = document.getElementById('sidebar');
+  const toggle = document.querySelector('.sidebar-toggle');
+  const isCollapsed = sidebar.classList.toggle('collapsed');
+  toggle.setAttribute('aria-expanded', !isCollapsed);
+}
+
+/* ==========================================================================
+   COMMAND PALETTE (⌘K)
+   ========================================================================== */
+const CommandPalette = (() => {
+  const palette = document.getElementById('cmd-palette');
+  const backdrop = document.getElementById('cmd-backdrop');
+  const search = document.getElementById('cmd-search');
+  const list = document.getElementById('cmd-list');
+  let open = false;
+  let selectedIndex = -1;
+
+  const commands = [
+    { id: 'home', title: 'Alight Motion Pro', desc: 'Portal aktivasi lisensi', icon: 'fa-house', action: () => ViewManager.switchView('home') },
+    { id: 'netflix', title: 'Netflix Token', desc: 'Segera hadir', icon: 'fa-circle-play', action: () => ViewManager.switchView('netflix') },
+    { id: 'viu', title: 'Viu Account', desc: 'Segera hadir', icon: 'fa-tv', action: () => ViewManager.switchView('viu') },
+    { id: 'wareaction', title: 'WA Reaction', desc: 'Segera hadir', icon: 'fa-comment', action: () => ViewManager.switchView('wareaction') },
+    { id: 'toggle-sidebar', title: 'Toggle Sidebar', desc: 'Perlebar/sempitkan sidebar', icon: 'fa-sidebar', action: toggleSidebar },
+    { id: 'copy-email', title: 'Salin Email', desc: 'Salin email dari form', icon: 'fa-copy', action: () => { const el = document.getElementById('email'); if (el) Clipboard.copy(el.value); } },
+    { id: 'copy-magiclink', title: 'Salin Magic Link', desc: 'Salin magic link dari form', icon: 'fa-link', action: () => { const el = document.getElementById('magicLink'); if (el) Clipboard.copy(el.value); } },
+    { id: 'refresh', title: 'Refresh Halaman', desc: 'Muat ulang aplikasi', icon: 'fa-rotate', action: () => location.reload() }
+  ];
+
+  function render(filter = '') {
+    const filtered = commands.filter(c =>
+      c.title.toLowerCase().includes(filter.toLowerCase()) ||
+      c.desc.toLowerCase().includes(filter.toLowerCase())
+    );
+
+    if (filtered.length === 0) {
+      list.innerHTML = '<div class="cmd-empty">Tidak ada perintah cocok</div>';
+      return;
+    }
+
+    list.innerHTML = filtered.map((c, i) => `
+      <div class="cmd-item${i === selectedIndex ? ' selected' : ''}" data-id="${c.id}" role="option" aria-selected="${i === selectedIndex}">
+        <div class="cmd-item-icon"><i class="fa-solid ${c.icon}"></i></div>
+        <div class="cmd-item-content">
+          <div class="cmd-item-title">${c.title}</div>
+          <div class="cmd-item-desc">${c.desc}</div>
+        </div>
+      </div>
+    `).join('');
+
+    selectedIndex = Math.max(-1, Math.min(selectedIndex, filtered.length - 1));
+    updateSelection(filtered);
+  }
+
+  function updateSelection(filtered) {
+    list.querySelectorAll('.cmd-item').forEach((el, i) => {
+      el.classList.toggle('selected', i === selectedIndex);
+      el.setAttribute('aria-selected', i === selectedIndex);
+    });
+    if (selectedIndex >= 0) {
+      list.querySelector('.cmd-item.selected')?.scrollIntoView({ block: 'nearest' });
+    }
+  }
+
+  function openPalette() {
+    open = true;
+    palette.classList.add('open');
+    backdrop.classList.add('open');
+    search.value = '';
+    selectedIndex = -1;
+    render();
+    search.focus();
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closePalette() {
+    open = false;
+    palette.classList.remove('open');
+    backdrop.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  function handleKeydown(e) {
+    if (!open) return;
+    const filtered = commands.filter(c =>
+      c.title.toLowerCase().includes(search.value.toLowerCase()) ||
+      c.desc.toLowerCase().includes(search.value.toLowerCase())
+    );
+
+    switch (e.key) {
+      case 'Escape': closePalette(); break;
+      case 'ArrowDown': e.preventDefault(); selectedIndex = Math.min(selectedIndex + 1, filtered.length - 1); updateSelection(filtered); break;
+      case 'ArrowUp': e.preventDefault(); selectedIndex = Math.max(selectedIndex - 1, 0); updateSelection(filtered); break;
+      case 'Enter':
+        e.preventDefault();
+        if (selectedIndex >= 0 && filtered[selectedIndex]) {
+          filtered[selectedIndex].action();
+          closePalette();
+        }
+        break;
+    }
+  }
+
+  function init() {
+    document.addEventListener('keydown', (e) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') { e.preventDefault(); open ? closePalette() : openPalette(); }
+    });
+    document.addEventListener('keydown', handleKeydown);
+    search.addEventListener('input', () => { selectedIndex = -1; render(search.value); });
+    list.addEventListener('click', (e) => {
+      const item = e.target.closest('.cmd-item');
+      if (item) {
+        const cmd = commands.find(c => c.id === item.dataset.id);
+        if (cmd) { cmd.action(); closePalette(); }
+      }
+    });
+    backdrop.addEventListener('click', closePalette);
+  }
+
+  return { init, open: openPalette, close: closePalette };
+})();
+
+/* ==========================================================================
+   PROGRESS BAR HELPERS
+   ========================================================================== */
+const Progress = (() => {
+  function show(id, indeterminate = false) {
+    const bar = document.getElementById(id);
+    if (!bar) return;
+    bar.hidden = false;
+    const fill = bar.querySelector('.progress-bar-fill');
+    if (indeterminate) fill.classList.add('indeterminate');
+    else fill.classList.remove('indeterminate');
+  }
+
+  function hide(id) {
+    const bar = document.getElementById(id);
+    if (bar) bar.hidden = true;
+  }
+
+  function set(id, percent) {
+    const bar = document.getElementById(id);
+    if (!bar) return;
+    const fill = bar.querySelector('.progress-bar-fill');
+    fill.classList.remove('indeterminate');
+    fill.style.width = `${Math.max(0, Math.min(100, percent))}%`;
+  }
+
+  return { show, hide, set };
+})();
+
+/* ==========================================================================
+   FORM HANDLERS - Alight Motion & Jarvis
+   ========================================================================== */
+const Forms = (() => {
+  let currentEmail = '';
+
+  // Elements
+  const formSend = document.getElementById('form-send');
+  const formVerify = document.getElementById('form-verify');
+  const emailInput = document.getElementById('email');
+  const magicLinkInput = document.getElementById('magicLink');
+  const btnSend = document.getElementById('btn-send');
+  const btnVerify = document.getElementById('btn-verify');
+  const btnBack = document.getElementById('btn-back');
+  const targetEmailLabel = document.getElementById('target-email-label');
+  const step1Ind = document.getElementById('step-1-indicator');
+  const step2Ind = document.getElementById('step-2-indicator');
+  const sendProgress = document.getElementById('send-progress');
+  const verifyProgress = document.getElementById('verify-progress');
+
+  const spinner = `<i class="fa-solid fa-spinner fa-spin spin"></i>`;
+
+  function setStep(step) {
+    if (step === 2) {
+      step1Ind.className = 'stp';
+      step1Ind.querySelector('.n').className = 'n';
+      step2Ind.className = 'stp on';
+      step2Ind.querySelector('.n').className = 'n on';
+    } else {
+      step1Ind.className = 'stp on';
+      step1Ind.querySelector('.n').className = 'n on';
+      step2Ind.className = 'stp';
+      step2Ind.querySelector('.n').className = 'n';
+    }
+  }
+
+  function setLoading(btn, text, loading = true) {
+    btn.disabled = loading;
+    btn.innerHTML = loading ? `${spinner}<span>${text}</span>` : `<span>${text}</span>`;
+  }
+
+  // Validation setup
+  Validation.attachValidation(emailInput, [Validation.rules.required, Validation.rules.email]);
+  Validation.attachValidation(magicLinkInput, [Validation.rules.required, Validation.rules.minLength(10)]);
+
+  // Stage 1: Send Magic Link
+  formSend.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (!Validation.validateField(emailInput, [Validation.rules.required, Validation.rules.email])) return;
+
+    currentEmail = emailInput.value.trim();
+    setLoading(btnSend, 'Mengirim...');
+    Progress.show('send-progress', true);
+
+    try {
+      const data = await API.sendLink(currentEmail);
+      Progress.hide('send-progress');
+      Toast.success(data.message || 'Magic link terkirim');
+      targetEmailLabel.textContent = currentEmail;
+      formSend.classList.add('hidden');
+      formVerify.classList.remove('hidden');
+      setStep(2);
+    } catch (err) {
+      Progress.hide('send-progress');
+      Toast.error(err.message || 'Gagal mengirim link');
+    } finally {
+      setLoading(btnSend, 'Kirim Magic Link', false);
+    }
+  });
+
+  btnBack.addEventListener('click', () => {
+    formVerify.classList.add('hidden');
+    formSend.classList.remove('hidden');
+    setStep(1);
+  });
+
+  // Stage 2: Verify Magic Link
+  formVerify.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (!Validation.validateField(magicLinkInput, [Validation.rules.required, Validation.rules.minLength(10)])) return;
+
+    setLoading(btnVerify, 'Memverifikasi...');
+    Progress.show('verify-progress', true);
+
+    try {
+      const data = await API.verifyLink(currentEmail, magicLinkInput.value.trim());
+      Progress.hide('verify-progress');
+      showSuccessResult(data);
+    } catch (err) {
+      Progress.hide('verify-progress');
+      Toast.error(err.message || 'Verifikasi gagal');
+    } finally {
+      setLoading(btnVerify, 'Verifikasi & Aktifkan', false);
+    }
+  });
+
+  function showSuccessResult(data) {
+    const validUntilStr = data.validUntil
+      ? new Date(data.validUntil).toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' })
+      : '-';
+
+    Swal.fire({
+      icon: 'success',
+      title: 'Aktivasi Berhasil!',
+      html: `
+        <div class="rcp">
+          <div><span>Status</span><b>${data.membershipStatus || 'PREMIUM_ACTIVE'}</b></div>
+          <div><span>Plan</span><b>${data.planName || '-'}</b></div>
+          <div><span>Order ID</span><b>${data.orderId || '-'}</b></div>
+          <div><span>Valid until</span><b>${validUntilStr}</b></div>
+        </div>
+        <p class="rn">Halaman akan di-refresh otomatis dalam 5 detik...</p>
+      `,
+      confirmButtonText: 'Proses Akun Lain',
+      confirmButtonColor: '#151311',
+      timer: 5000,
+      timerProgressBar: true
+    }).then(() => location.reload());
+  }
+
+  return { setStep };
+})();
+
+/* ==========================================================================
+   INITIALIZATION
+   ========================================================================== */
+document.addEventListener('DOMContentLoaded', () => {
+  ViewManager.init();
+  Clipboard.init();
+  CommandPalette.init();
+
+  // Focus management for modals
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Tab') {
+      const activeModal = document.querySelector('.swal2-popup:not([style*="display: none"]), .cmd-palette.open');
+      if (activeModal) trapFocus(activeModal, e);
+    }
+  });
+});
+
+function trapFocus(container, e) {
+  const focusable = container.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
+  const first = focusable[0];
+  const last = focusable[focusable.length - 1];
+  if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+  else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+}
+</script>
 </body>
 </html>
