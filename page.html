@@ -403,23 +403,23 @@ div.swal2-popup{border-radius:0!important;background:var(--card)!important;font-
                     <span>Kumpulan Tools & Utilitas</span>
                 </div>
             </div>
-            <button class="sidebar-toggle" aria-label="Collapse sidebar" aria-expanded="true" onclick="toggleSidebar()">
+            <button class="sidebar-toggle" aria-label="Collapse sidebar" aria-expanded="true">
                 <i class="fa-solid fa-chevron-left"></i>
             </button>
             <nav>
-                <button onclick="switchView('home')" id="nav-home" class="nav-btn on">
+                <button id="nav-home" class="nav-btn on">
                     <span class="nav-icon" aria-hidden="true"><i class="fa-solid fa-house"></i></span>
                     <span class="nav-label">Home</span>
                 </button>
-                <button onclick="switchView('netflix')" id="nav-netflix" class="nav-btn">
+                <button id="nav-netflix" class="nav-btn">
                     <span class="nav-icon" aria-hidden="true"><i class="fa-solid fa-circle-play"></i></span>
                     <span class="nav-label">Netflix Token</span>
                 </button>
-                <button onclick="switchView('viu')" id="nav-viu" class="nav-btn">
+                <button id="nav-viu" class="nav-btn">
                     <span class="nav-icon" aria-hidden="true"><i class="fa-solid fa-tv"></i></span>
                     <span class="nav-label">Viu Account</span>
                 </button>
-                <button onclick="switchView('wareaction')" id="nav-wareaction" class="nav-btn">
+                <button id="nav-wareaction" class="nav-btn">
                     <span class="nav-icon" aria-hidden="true"><i class="fa-solid fa-comment"></i></span>
                     <span class="nav-label">WA Reaction</span>
                 </button>
@@ -435,19 +435,19 @@ div.swal2-popup{border-radius:0!important;background:var(--card)!important;font-
     <!-- MOBILE BOTTOM NAV -->
     <nav class="mnav" aria-label="Navigasi utama">
         <div class="mnav-indicator" aria-hidden="true"></div>
-        <button onclick="switchView('home')" id="mob-nav-home" class="mob-btn on" data-view="home">
+        <button id="mob-nav-home" class="mob-btn on" data-view="home">
             <i class="fa-solid fa-house"></i>
             <span class="mob-btn-label">Alight</span>
         </button>
-        <button onclick="switchView('netflix')" id="mob-nav-netflix" class="mob-btn" data-view="netflix">
+        <button id="mob-nav-netflix" class="mob-btn" data-view="netflix">
             <i class="fa-solid fa-circle-play"></i>
             <span class="mob-btn-label">Netflix</span>
         </button>
-        <button onclick="switchView('viu')" id="mob-nav-viu" class="mob-btn" data-view="viu">
+        <button id="mob-nav-viu" class="mob-btn" data-view="viu">
             <i class="fa-solid fa-tv"></i>
             <span class="mob-btn-label">Viu</span>
         </button>
-        <button onclick="switchView('wareaction')" id="mob-nav-wareaction" class="mob-btn" data-view="wareaction">
+        <button id="mob-nav-wareaction" class="mob-btn" data-view="wareaction">
             <i class="fa-solid fa-comment"></i>
             <span class="mob-btn-label">WA</span>
         </button>
@@ -867,6 +867,9 @@ const ViewManager = (() => {
   return { switchView, init, getCurrent };
 })();
 
+// Expose switchView globally for inline onclick handlers
+window.switchView = ViewManager.switchView;
+
 /* ==========================================================================
    MOBILE INDICATOR
    ========================================================================== */
@@ -1164,6 +1167,9 @@ document.addEventListener('DOMContentLoaded', () => {
   ViewManager.init();
   Clipboard.init();
   CommandPalette.init();
+
+  // Sidebar toggle
+  document.querySelector('.sidebar-toggle')?.addEventListener('click', toggleSidebar);
 
   // Focus management for modals
   document.addEventListener('keydown', (e) => {
