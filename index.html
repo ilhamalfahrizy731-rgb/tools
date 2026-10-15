@@ -6,8 +6,12 @@
 <title>Developer Portal</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500;1,600&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://api.fontshare.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@700&display=swap" rel="stylesheet">
+<link href="https://api.fontshare.com/v2/css?f[]=general-sans@400,500&display=swap" rel="stylesheet">
 <style>
-:root{--paper:#f4f1ee;--card:#fbfaf9;--stone:#e8e3dc;--ink:#151311;--mute:#7d776f;--line:rgba(21,19,17,.2);--f:'Cormorant Garamond','Times New Roman',serif;--ease:cubic-bezier(.16,1,.3,1);padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);box-sizing:border-box}
+:root{--paper:#f4f1ee;--card:#fbfaf9;--stone:#e8e3dc;--ink:#151311;--mute:#7d776f;--line:rgba(21,19,17,.2);--accent:#9a4a1f;--f:'Cormorant Garamond','Times New Roman',serif;--ease:cubic-bezier(.16,1,.3,1);padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);box-sizing:border-box}
 *{box-sizing:border-box;margin:0}
 html{-webkit-font-smoothing:antialiased;scrollbar-width:thin;scrollbar-color:var(--ink) var(--paper)}
 body{font:500 clamp(18px,1.5vw,22px)/1.5 var(--f);background:var(--paper);color:var(--ink);overflow-x:hidden}
@@ -16,6 +20,7 @@ a{color:inherit;text-decoration:none}
 em{font-style:italic;text-transform:none;font-weight:500;letter-spacing:0}
 button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 :focus-visible{outline:2px solid var(--ink);outline-offset:4px}
+.hidden{display:none!important}
 .up{text-transform:uppercase}
 /* masked line reveal */
 .ln{display:block;overflow:hidden;padding-bottom:.14em;margin-bottom:-.14em}
@@ -87,6 +92,8 @@ section{position:relative;padding:clamp(90px,16vh,190px) clamp(22px,6vw,110px);b
 .pane[hidden]{display:none}.pane{animation:sw .8s var(--ease)}
 @keyframes sw{from{opacity:0;transform:translateY(14px)}}
 #tenang{background:var(--stone)}
+#faq{background:var(--paper)}
+#faq .vs-faq-accordion{margin-top:clamp(50px,9vh,110px)}
 .cols{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(24px,4vw,70px);margin-top:clamp(70px,12vh,140px)}
 .cols div{border-top:1px solid var(--ink);padding-top:22px}
 .cols h4{font:italic 500 clamp(28px,2.6vw,40px)/1.1 var(--f);margin-bottom:12px}
@@ -103,6 +110,238 @@ section{position:relative;padding:clamp(90px,16vh,190px) clamp(22px,6vw,110px);b
 @media(max-width:820px){.demo,.cols{grid-template-columns:1fr}.row{flex-direction:column;gap:6px}.row p{text-align:left}.side{width:min(88vw,460px);text-align:center}.side p{margin-inline:auto}.a-title{top:64%}.nb{padding:12px 16px;font-size:16px}}
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition-duration:.01ms!important}}
 </style>
+<style>
+  .vs-curved-gallery {
+    --vs-curved-gallery-bend: 1;
+    --vs-curved-gallery-gap: .14;
+    --vs-curved-gallery-size: .5;
+    --vs-curved-gallery-radius: 18;
+    --vs-curved-gallery-bg: #f4f1ee;
+    --vs-curved-gallery-drift: .12;
+    --vs-curved-gallery-height: 100svh;
+    position: relative; width: 100%; height: var(--vs-curved-gallery-height); min-height: 380px; overflow: hidden; isolation: isolate;
+    background: var(--vs-curved-gallery-bg); touch-action: pan-y; -webkit-tap-highlight-color: transparent; cursor: grab; outline: none;
+    -webkit-user-select: none; user-select: none;
+  }
+  .vs-curved-gallery.is-dragging { cursor: grabbing; }
+  .vs-curved-gallery:focus-visible { box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--vs-curved-gallery-bg) 40%, #000); }
+  .vs-curved-gallery-canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; opacity: 0; transition: opacity .9s cubic-bezier(.16,1,.3,1); }
+  .vs-curved-gallery[data-vs-state="ready"] .vs-curved-gallery-canvas { opacity: 1; }
+  .vs-curved-gallery-track { position: absolute; inset: 0; margin: 0; padding: 0 8vw; list-style: none; display: flex; align-items: center; gap: 24px;
+    overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; }
+  .vs-curved-gallery-track::-webkit-scrollbar { display: none; }
+  .vs-curved-gallery-track li { flex: 0 0 auto; height: calc(var(--vs-curved-gallery-size) * 100%); aspect-ratio: 3 / 4; scroll-snap-align: center; }
+  .vs-curved-gallery-track img { width: 100%; height: 100%; object-fit: cover; display: block; border-radius: calc(var(--vs-curved-gallery-radius) * 1px); pointer-events: none; }
+  .vs-curved-gallery[data-vs-state="ready"] .vs-curved-gallery-track { clip-path: inset(50%); pointer-events: none; }
+  @media (max-width: 820px) {
+    .vs-curved-gallery { --vs-curved-gallery-size: .55; --vs-curved-gallery-radius: 14; min-height: 320px; }
+    .vs-curved-gallery-track { padding: 0 6vw; gap: 16px; }
+  }
+</style>
+<style>
+  .vs-faq-accordion{
+    --vs-faq-accordion-ink: var(--ink);
+    --vs-faq-accordion-accent: var(--accent);
+    --vs-faq-accordion-line: var(--line);
+    --vs-faq-accordion-card: var(--card);
+    --vs-faq-accordion-q-size: clamp(24px,3vw,40px);
+    --vs-faq-accordion-pad: clamp(22px,3.2vh,34px);
+    --vs-faq-accordion-inset: clamp(14px,1.6vw,26px);
+    color: var(--vs-faq-accordion-ink); font-family: var(--f);
+    margin: 0; padding: 0; list-style: none; position: relative;
+    -webkit-font-smoothing: antialiased;
+  }
+  .vs-faq-accordion-item{ position: relative; isolation: isolate; padding: 0 var(--vs-faq-accordion-inset); }  /* the card lives inside the box: nothing bleeds out */
+  /* hairline under each row; it steps aside for the open card and the row above it */
+  .vs-faq-accordion-item::after{
+    content: ""; position: absolute; left: var(--vs-faq-accordion-inset); right: var(--vs-faq-accordion-inset); bottom: 0; height: 1px; background: var(--vs-faq-accordion-line);
+    transition: opacity .4s cubic-bezier(.2,0,0,1);
+  }
+  .vs-faq-accordion-item:last-child::after{ opacity: 0; }
+  .vs-faq-accordion-item.is-open::after, .vs-faq-accordion-item:has(+ .is-open)::after{ opacity: 0; }
+  /* the open row lifts into a card */
+  .vs-faq-accordion-item::before{
+    content: ""; position: absolute; inset: 0; z-index: -1; border-radius: 18px; pointer-events: none;
+    background: var(--vs-faq-accordion-card);
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,.7), inset 0 1px 0 #fff, 0 1px 2px rgba(27,42,32,.06), 0 18px 40px -22px rgba(27,42,32,.35);
+    opacity: 0; transform: scale(.975); transition: opacity .45s cubic-bezier(.2,0,0,1), transform .7s cubic-bezier(.34,1.3,.64,1);
+  }
+  .vs-faq-accordion-item.is-open::before{ opacity: 1; transform: none; }
+  .vs-faq-accordion-item h3{ margin: 0; font: inherit; }
+
+  .vs-faq-accordion-q{
+    appearance: none; border: 0; margin: 0; background: transparent; color: inherit; cursor: pointer; text-align: left; width: 100%;
+    display: grid; grid-template-columns: 30px 1fr 32px; gap: 14px; align-items: center; padding: var(--vs-faq-accordion-pad) 0;
+    font: 500 var(--vs-faq-accordion-q-size)/1.3 var(--f); letter-spacing: -.012em;
+    -webkit-tap-highlight-color: transparent; outline: none; position: relative;
+    transition: padding .35s cubic-bezier(.16,1,.3,1);
+  }
+  .vs-faq-accordion-q::before{ /* hover wash + focus ring, same shape as the card */
+    content: ""; position: absolute; inset: 3px calc(var(--vs-faq-accordion-inset) * -1); border-radius: 14px; background: rgba(27,42,32,.045);
+    opacity: 0; transition: opacity .2s cubic-bezier(.2,0,0,1); pointer-events: none;
+  }
+  .vs-faq-accordion-item:not(.is-open) .vs-faq-accordion-q:hover::before{ opacity: 1; }
+  .vs-faq-accordion-q:focus-visible::before{ opacity: 1; background: transparent; box-shadow: 0 0 0 2px var(--vs-faq-accordion-accent); }
+  .vs-faq-accordion-n{ font-size: 12px; font-weight: 500; letter-spacing: .04em; font-variant-numeric: tabular-nums; opacity: .4;
+    transition: opacity .3s cubic-bezier(.2,0,0,1), color .3s cubic-bezier(.2,0,0,1); }
+  .vs-faq-accordion-text{ transition: opacity .3s cubic-bezier(.2,0,0,1), transform .5s cubic-bezier(.16,1,.3,1); }
+  .vs-faq-accordion.has-open .vs-faq-accordion-item:not(.is-open) .vs-faq-accordion-text{ opacity: .6; }
+  .vs-faq-accordion.has-open .vs-faq-accordion-item:not(.is-open) .vs-faq-accordion-q:hover .vs-faq-accordion-text{ opacity: 1; }
+  .vs-faq-accordion-item:not(.is-open) .vs-faq-accordion-q:hover .vs-faq-accordion-text{ transform: translate3d(3px,0,0); }
+  .vs-faq-accordion-item.is-open .vs-faq-accordion-n{ opacity: 1; color: var(--vs-faq-accordion-accent); }
+
+  /* the icon: two bars in a ring.
+     plus    → the vertical bar lies down into a minus while the ring spins half a turn and fills.
+     chevron → the two bars swap angles, so the V folds over into a ^.                                  */
+  .vs-faq-accordion-icon{ position: relative; width: 32px; height: 32px; border-radius: 50%; justify-self: end;
+    box-shadow: inset 0 0 0 1px rgba(27,42,32,.2);
+    transition: background-color .35s cubic-bezier(.2,0,0,1), box-shadow .35s cubic-bezier(.2,0,0,1), color .35s, transform .6s cubic-bezier(.34,1.56,.64,1); }
+  .vs-faq-accordion-icon::before, .vs-faq-accordion-icon::after{
+    content: ""; position: absolute; left: 50%; top: 50%; width: 12px; height: 1.5px; margin: -.75px 0 0 -6px; border-radius: 2px;
+    background: currentColor; transition: transform .6s cubic-bezier(.34,1.56,.64,1), width .3s;
+  }
+  .vs-faq-accordion-icon::after{ transform: rotate(90deg); }
+  .vs-faq-accordion-q:hover .vs-faq-accordion-icon{ box-shadow: inset 0 0 0 1px rgba(27,42,32,.5); }
+  .vs-faq-accordion-q:active .vs-faq-accordion-icon{ transform: scale(.88); }
+  .vs-faq-accordion-item.is-open .vs-faq-accordion-icon{ background: var(--vs-faq-accordion-accent); box-shadow: 0 6px 14px -6px var(--vs-faq-accordion-accent); transform: rotate(180deg); color: #fff; }
+  .vs-faq-accordion-item.is-open .vs-faq-accordion-q:active .vs-faq-accordion-icon{ transform: rotate(180deg) scale(.88); }
+  .vs-faq-accordion-item.is-open .vs-faq-accordion-icon::after{ transform: rotate(0deg); }
+  .vs-faq-accordion[data-icon="chevron"] .vs-faq-accordion-icon::before,
+  .vs-faq-accordion[data-icon="chevron"] .vs-faq-accordion-icon::after{ width: 8.5px; margin-left: -4.25px; }
+  .vs-faq-accordion[data-icon="chevron"] .vs-faq-accordion-icon::before{ transform: translate3d(-2.9px,.6px,0) rotate(45deg); }
+  .vs-faq-accordion[data-icon="chevron"] .vs-faq-accordion-icon::after{ transform: translate3d(2.9px,.6px,0) rotate(-45deg); }
+  .vs-faq-accordion[data-icon="chevron"] .vs-faq-accordion-item.is-open .vs-faq-accordion-icon{ transform: none; }
+  .vs-faq-accordion[data-icon="chevron"] .vs-faq-accordion-item.is-open .vs-faq-accordion-q:active .vs-faq-accordion-icon{ transform: scale(.88); }
+  .vs-faq-accordion[data-icon="chevron"] .vs-faq-accordion-item.is-open .vs-faq-accordion-icon::before{ transform: translate3d(-2.9px,-.6px,0) rotate(-45deg); }
+  .vs-faq-accordion[data-icon="chevron"] .vs-faq-accordion-item.is-open .vs-faq-accordion-icon::after{ transform: translate3d(2.9px,-.6px,0) rotate(45deg); }
+
+  /* the answer: height on a spring (JS), text rises in on transform/opacity */
+  .vs-faq-accordion-a{ overflow: hidden; height: 0; contain: layout paint; }
+  .vs-faq-accordion-a[hidden]{ display: block; }       /* keep the box (height 0) so until-found can reveal it */
+  .vs-faq-accordion-inner{ padding: 0 46px calc(var(--vs-faq-accordion-pad) + 4px) 44px; will-change: transform, opacity; }
+  .vs-faq-accordion-inner p{ margin: 0 0 12px; max-width: 56ch; font-size: 15.5px; line-height: 1.6; letter-spacing: -.005em; opacity: .74; text-wrap: pretty; }
+  .vs-faq-accordion-inner p:last-child{ margin-bottom: 0; }
+  .vs-faq-accordion-inner a{ color: var(--vs-faq-accordion-accent); text-decoration: none; background: linear-gradient(currentColor, currentColor) 0 100% / 100% 1px no-repeat;
+    transition: background-size .35s cubic-bezier(.16,1,.3,1); }
+  .vs-faq-accordion-inner a:hover{ background-size: 0 1px; background-position: 100% 100%; }
+  .vs-faq-accordion-inner a:focus-visible{ outline: 2px solid var(--vs-faq-accordion-accent); outline-offset: 2px; border-radius: 2px; }
+  .vs-faq-accordion-inner ul{ margin: 0 0 12px; padding: 0; list-style: none; display: grid; gap: 6px; font-size: 15px; opacity: .74; }
+  .vs-faq-accordion-inner li{ display: flex; gap: 10px; }
+  .vs-faq-accordion-inner li::before{ content: ""; flex: none; width: 5px; height: 5px; border-radius: 50%; margin-top: .6em; background: var(--vs-faq-accordion-accent); }
+
+  @media (max-width: 640px){
+    .vs-faq-accordion{ --vs-faq-accordion-q-size: 16.5px; --vs-faq-accordion-pad: 17px; --vs-faq-accordion-inset: 12px; }
+    .vs-faq-accordion-item::before{ border-radius: 14px; }
+    .vs-faq-accordion-q{ grid-template-columns: 24px 1fr 30px; gap: 10px; }
+    .vs-faq-accordion-icon{ width: 30px; height: 30px; }
+    .vs-faq-accordion-inner{ padding: 0 6px calc(var(--vs-faq-accordion-pad) + 2px) 34px; }
+    .vs-faq-accordion-inner p{ font-size: 15px; }
+  }
+  @media (prefers-reduced-motion: reduce){
+    .vs-faq-accordion *, .vs-faq-accordion *::before, .vs-faq-accordion *::after{ transition: none !important; }
+  }
+</style>
+<style>
+  /* ---- tema situs: font Cormorant Garamond supaya nyambung (Space Grotesk tetap di-load
+         atas instruksi vividsites; ganti var(--f) jadi "Space Grotesk" kalau mau dipakai) ---- */
+  .vs-faq-accordion .vs-faq-accordion-n{ font-size: clamp(14px,1vw,18px); }
+  .vs-faq-accordion .vs-faq-accordion-inner p{ font-size: clamp(18px,1.4vw,22px); }
+  .vs-faq-accordion .vs-faq-accordion-inner ul{ font-size: clamp(17px,1.3vw,21px); }
+  @media (max-width: 640px){
+    .vs-faq-accordion{ --vs-faq-accordion-q-size: 21px; }
+    .vs-faq-accordion .vs-faq-accordion-n{ font-size: 15px; }
+    .vs-faq-accordion .vs-faq-accordion-inner p{ font-size: 18px; }
+    .vs-faq-accordion .vs-faq-accordion-inner ul{ font-size: 17px; }
+  }
+</style>
+<style>
+.vs-wordmark-footer {
+  --vs-wordmark-footer-bg: var(--ink);
+  --vs-wordmark-footer-ink: var(--paper);
+  --vs-wordmark-footer-mark: var(--paper);
+  --vs-wordmark-footer-line: color-mix(in srgb, var(--vs-wordmark-footer-ink) 16%, transparent);
+  --vs-wordmark-footer-display: "Oswald", "Arial Narrow", Impact, sans-serif;
+  --vs-wordmark-footer-text: var(--f);
+  --vs-wordmark-footer-pad: clamp(1.25rem, 3.4vw, 3rem);
+  --vs-wordmark-footer-min-h: min(80svh, 760px);
+
+  position: relative; box-sizing: border-box; display: flex; flex-direction: column; min-height: var(--vs-wordmark-footer-min-h);
+  padding: calc(var(--vs-wordmark-footer-pad) * 1.15) var(--vs-wordmark-footer-pad) calc(var(--vs-wordmark-footer-pad) * .7);
+  background: var(--vs-wordmark-footer-bg); color: var(--vs-wordmark-footer-ink); overflow: hidden;
+  font: 400 clamp(.875rem, .8rem + .2vw, 1rem)/1.45 var(--vs-wordmark-footer-text); -webkit-font-smoothing: antialiased;
+}
+.vs-wordmark-footer *, .vs-wordmark-footer *::before, .vs-wordmark-footer *::after { box-sizing: border-box; }
+
+.vs-wordmark-footer-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 2.5rem; }
+.vs-wordmark-footer-cols { flex: 1; max-width: 54rem; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1.4fr) minmax(0, 1fr); gap: 1.6rem clamp(1.25rem, 4vw, 4.5rem); margin: 0; }
+.vs-wordmark-footer-col h3 {
+  margin: 0 0 1.05rem; font-size: .72rem; font-weight: 500; letter-spacing: .1em; text-transform: uppercase; opacity: .5;
+}
+.vs-wordmark-footer-col ul { margin: 0; padding: 0; list-style: none; display: grid; gap: .42rem; }
+.vs-wordmark-footer-col address { font-style: normal; display: grid; gap: .42rem; overflow-wrap: anywhere; }
+.vs-wordmark-footer a {
+  position: relative; color: inherit; text-decoration: none; width: fit-content; outline: none; border-radius: 2px;
+}
+.vs-wordmark-footer-col a { font-weight: 500; }
+.vs-wordmark-footer-col a::after { /* the underline: draws in from the left, leaves to the right */
+  content: ""; position: absolute; left: 0; right: 0; bottom: -.08em; height: 1px; background: currentColor;
+  transform: scaleX(0); transform-origin: 100% 50%; transition: transform .5s cubic-bezier(.2,.8,.2,1);
+}
+.vs-wordmark-footer-col a:hover::after, .vs-wordmark-footer-col a:focus-visible::after { transform: scaleX(1); transform-origin: 0 50%; }
+.vs-wordmark-footer a:focus-visible { box-shadow: 0 0 0 2px var(--vs-wordmark-footer-bg), 0 0 0 3.5px var(--vs-wordmark-footer-ink); }
+.vs-wordmark-footer-col .is-ext::before { content: "\2197"; position: absolute; right: -1.05em; top: 0; font-size: .8em; opacity: .45; transition: transform .35s cubic-bezier(.2,.8,.2,1), opacity .2s; }
+.vs-wordmark-footer-col .is-ext:hover::before { transform: translate(.15em, -.15em); opacity: 1; }
+
+/* back to top */
+.vs-wordmark-footer-up {
+  all: unset; box-sizing: border-box; position: relative; flex: none; display: inline-flex; align-items: center; gap: .9rem; cursor: pointer;
+  font-size: .72rem; font-weight: 500; letter-spacing: .1em; text-transform: uppercase; -webkit-tap-highlight-color: transparent;
+}
+.vs-wordmark-footer-up i {
+  position: relative; display: grid; place-items: center; width: 3.4rem; height: 3.4rem; border-radius: 50%; overflow: hidden;
+  box-shadow: inset 0 0 0 .5px color-mix(in srgb, var(--vs-wordmark-footer-ink) 40%, transparent), inset 0 0 0 1px var(--vs-wordmark-footer-line);
+  transition: transform .45s cubic-bezier(.3,1.6,.5,1);
+}
+.vs-wordmark-footer-up i::before { /* the fill that rises on hover */
+  content: ""; position: absolute; inset: 0; border-radius: 50%; background: var(--vs-wordmark-footer-ink);
+  transform: translateY(101%); transition: transform .5s cubic-bezier(.2,.8,.2,1);
+}
+.vs-wordmark-footer-up svg { position: relative; grid-area: 1 / 1; width: 1.05rem; height: 1.05rem; transition: transform .5s cubic-bezier(.7,0,.2,1), color .3s; }
+.vs-wordmark-footer-up svg + svg { transform: translateY(2.6rem); }
+.vs-wordmark-footer-up:hover i::before, .vs-wordmark-footer-up:focus-visible i::before { transform: translateY(0); }
+.vs-wordmark-footer-up:hover svg, .vs-wordmark-footer-up:focus-visible svg { color: var(--vs-wordmark-footer-bg); transform: translateY(-2.6rem); }
+.vs-wordmark-footer-up:hover svg + svg, .vs-wordmark-footer-up:focus-visible svg + svg { transform: translateY(0); }
+.vs-wordmark-footer-up:active i { transform: scale(.92); transition-duration: .12s; }
+.vs-wordmark-footer-up:focus-visible i { outline: 1.5px solid var(--vs-wordmark-footer-ink); outline-offset: 3px; }
+
+/* the wordmark */
+.vs-wordmark-footer-mark {
+  position: relative; margin: auto 0 0; padding: 2rem 0 .04em; color: var(--vs-wordmark-footer-mark);
+  font: 700 16vw/.84 var(--vs-wordmark-footer-display); letter-spacing: -.012em; text-transform: uppercase; white-space: nowrap; user-select: none; -webkit-user-select: none;
+}
+.vs-wordmark-footer-word { display: inline-block; margin-left: -.02em; }
+.vs-wordmark-footer-l { display: inline-block; vertical-align: top; padding: .02em .09em .07em; margin: 0 -.09em -.07em; will-change: transform; }
+.vs-wordmark-footer[data-reveal="rise"] .vs-wordmark-footer-l,
+.vs-wordmark-footer[data-reveal="mask"] .vs-wordmark-footer-l { overflow: hidden; }
+.vs-wordmark-footer-l > span { display: inline-block; transform-origin: 0 100%; will-change: transform; }
+.vs-wordmark-footer-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+.vs-wordmark-footer-base {
+  display: flex; justify-content: space-between; align-items: center; gap: 1rem 2rem; flex-wrap: wrap;
+  margin-top: 1.3rem; padding-top: 1rem; border-top: 1px solid var(--vs-wordmark-footer-line); font-size: .8rem;
+}
+.vs-wordmark-footer-base > span { opacity: .6; font-variant-numeric: tabular-nums; }
+.vs-wordmark-footer-base nav { display: flex; gap: 1.4rem; }
+.vs-wordmark-footer-base nav a { opacity: .6; transition: opacity .15s cubic-bezier(.2,0,0,1); }
+.vs-wordmark-footer-base nav a:hover, .vs-wordmark-footer-base nav a:focus-visible { opacity: 1; }
+
+@media (max-width: 760px) {
+  .vs-wordmark-footer-top { flex-direction: column; gap: 2.4rem; }
+  .vs-wordmark-footer-cols { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.8rem 1.5rem; width: 100%; }
+  .vs-wordmark-footer-base { font-size: .75rem; }
+}
+@media (forced-colors: active) { .vs-wordmark-footer-up i::before { background: CanvasText; } }
+</style>
 </head>
 <body class="lock">
 
@@ -110,7 +349,7 @@ section{position:relative;padding:clamp(90px,16vh,190px) clamp(22px,6vw,110px);b
 <div id="pre"><h1><span class="ln"><span class="pl" style="--d:.1">di mana <em>semua</em></span></span><span class="ln"><span class="pl" style="--d:.22">utilitasmu</span></span><span class="ln"><span class="pl" style="--d:.34">menjadi <em>satu.</em></span></span></h1><div id="pct">0%</div></div>
 
 <button class="nb" id="mb" aria-expanded="false">Menu</button>
-<a class="nb" id="cb" href="page.html"><em>Buka</em> Portal</a>
+<a class="nb" id="cb" href="#"><em>Buka</em> Portal</a>
 <nav id="menu" aria-label="Navigasi"><a href="#top">Beranda</a><a href="#layanan">Layanan</a><a href="#proses">Proses</a><a href="#tenang">Keamanan</a><a href="#cta">Mulai</a><small>Developer Portal · SaaS Utility Dashboard</small></nav>
 
 <!-- 1. HERO (fixed, driven by scroll) -->
@@ -124,6 +363,19 @@ section{position:relative;padding:clamp(90px,16vh,190px) clamp(22px,6vw,110px);b
 <div id="spacer"></div>
 
 <main id="top">
+<!-- Curved Gallery -->
+<section id="galeri" aria-labelledby="galeri-title" style="padding:0;box-shadow:none">
+  <div class="vs-curved-gallery" data-style="wave" aria-roledescription="carousel" aria-label="Portal screenshots">
+    <ul class="vs-curved-gallery-track">
+      <li><img src="https://picsum.photos/seed/alight1/600/800.webp" alt="Alight Motion Pro license activation portal dashboard"></li>
+      <li><img src="https://picsum.photos/seed/alight2/600/800.webp" alt="Magic link sent confirmation screen with email input"></li>
+      <li><img src="https://picsum.photos/seed/alight3/600/800.webp" alt="Verification step with magic link paste area"></li>
+    </ul>
+    <canvas class="vs-curved-gallery-canvas" aria-hidden="true"></canvas>
+  </div>
+  <h2 id="galeri-title" class="hidden">Tangkapan Layar Portal</h2>
+</section>
+
 <!-- 2. LAYANAN -->
 <section id="layanan"><div class="wrap">
   <p class="lab">isi portal</p>
@@ -164,14 +416,70 @@ section{position:relative;padding:clamp(90px,16vh,190px) clamp(22px,6vw,110px);b
   </div>
 </div></section>
 
+<!-- 6. FAQ -->
+<section id="faq"><div class="wrap">
+  <p class="lab">pertanyaan</p>
+  <h3 class="big wr">yang sering <em>ditanyakan.</em></h3>
+  <div class="vs-faq-accordion" data-icon="plus">
+    <div class="vs-faq-accordion-item" data-open>
+      <h3><button class="vs-faq-accordion-q" type="button"><span class="vs-faq-accordion-n">01</span><span class="vs-faq-accordion-text">Bagaimana cara mengaktifkan lisensi?</span><span class="vs-faq-accordion-icon" aria-hidden="true"></span></button></h3>
+      <div class="vs-faq-accordion-a"><div class="vs-faq-accordion-inner"><p>Masukkan email target, portal mengirim magic link, lalu buka link itu untuk verifikasi. Dua langkah dari satu portal, tanpa password.</p></div></div>
+    </div>
+    <div class="vs-faq-accordion-item">
+      <h3><button class="vs-faq-accordion-q" type="button"><span class="vs-faq-accordion-n">02</span><span class="vs-faq-accordion-text">Apa itu magic link?</span><span class="vs-faq-accordion-icon" aria-hidden="true"></span></button></h3>
+      <div class="vs-faq-accordion-a"><div class="vs-faq-accordion-inner"><p>Tautan sekali pakai yang dikirim ke email. Membukanya berarti membuktikan kamu pemilik akun, jadi tidak ada password yang perlu diingat — atau bisa lupa.</p></div></div>
+    </div>
+    <div class="vs-faq-accordion-item">
+      <h3><button class="vs-faq-accordion-q" type="button"><span class="vs-faq-accordion-n">03</span><span class="vs-faq-accordion-text">Layanan apa saja yang tersedia?</span><span class="vs-faq-accordion-icon" aria-hidden="true"></span></button></h3>
+      <div class="vs-faq-accordion-a"><div class="vs-faq-accordion-inner"><p>Saat ini ada empat: Alight Motion Pro, Netflix Token, Viu Account, dan WA Reaction. Semua berjalan dari dashboard yang sama, tanpa pindah halaman.</p></div></div>
+    </div>
+    <div class="vs-faq-accordion-item">
+      <h3><button class="vs-faq-accordion-q" type="button"><span class="vs-faq-accordion-n">04</span><span class="vs-faq-accordion-text">Apakah email target disimpan?</span><span class="vs-faq-accordion-icon" aria-hidden="true"></span></button></h3>
+      <div class="vs-faq-accordion-a"><div class="vs-faq-accordion-inner"><p>Email hanya dipakai untuk mengirim dan memverifikasi link, lalu langsung dibuang. Kami tidak menyimpannya setelah aktivasi selesai.</p></div></div>
+    </div>
+    <div class="vs-faq-accordion-item">
+      <h3><button class="vs-faq-accordion-q" type="button"><span class="vs-faq-accordion-n">05</span><span class="vs-faq-accordion-text">Magic link tidak masuk ke inbox?</span><span class="vs-faq-accordion-icon" aria-hidden="true"></span></button></h3>
+      <div class="vs-faq-accordion-a"><div class="vs-faq-accordion-inner"><p>Cek folder spam dulu. Kalau masih kosong, kirim ulang dari langkah kedua — link lama otomatis hangus begitu yang baru terbit.</p></div></div>
+    </div>
+    <div class="vs-faq-accordion-item">
+      <h3><button class="vs-faq-accordion-q" type="button"><span class="vs-faq-accordion-n">06</span><span class="vs-faq-accordion-text">Apakah layanan ini gratis?</span><span class="vs-faq-accordion-icon" aria-hidden="true"></span></button></h3>
+      <div class="vs-faq-accordion-a"><div class="vs-faq-accordion-inner"><p>Ya, portal dan seluruh alur aktivasinya gratis dipakai. Kamu hanya perlu akun layanan yang mau diaktifkan.</p></div></div>
+    </div>
+  </div>
+</div></section>
+
 <!-- 5. CTA -->
 <section id="cta"><div class="wrap">
   <p class="lab" style="color:rgba(244,241,238,.55)">siap dimulai</p>
   <h3 class="big wr"><em>mulai</em> aktivasi lisensimu hari ini.</h3>
   <a class="btn" href="#" id="open"><em>Buka</em> Portal</a>
-  <div class="foot"><span>© 2026 Developer Portal</span><a href="#top">Kembali ke atas</a></div>
 </div></section>
 </main>
+
+<!-- 7. FOOTER -->
+<footer class="vs-wordmark-footer" data-reveal="rise">
+  <div class="vs-wordmark-footer-top">
+    <nav class="vs-wordmark-footer-cols" aria-label="Footer">
+      <div class="vs-wordmark-footer-col"><h3>Portal</h3>
+        <ul><li><a href="#top">Beranda</a></li><li><a href="#layanan">Layanan</a></li><li><a href="#proses">Proses</a></li><li><a href="#faq">FAQ</a></li></ul></div>
+      <div class="vs-wordmark-footer-col"><h3>Layanan</h3>
+        <ul><li><a href="#layanan">Alight Motion</a></li><li><a href="#layanan">Netflix Token</a></li><li><a href="#layanan">Viu Account</a></li><li><a href="#layanan">WA Reaction</a></li></ul></div>
+      <div class="vs-wordmark-footer-col"><h3>Portal</h3>
+        <address><span>Developer Portal</span><span>Dashboard Utilitas SaaS</span><a href="mailto:halo@developerportal.id">halo@developerportal.id</a></address></div>
+      <div class="vs-wordmark-footer-col"><h3>Legal</h3>
+        <ul><li><a href="#faq">Privasi</a></li><li><a href="#faq">Ketentuan</a></li><li><a href="#tenang">Keamanan</a></li></ul></div>
+    </nav>
+    <button class="vs-wordmark-footer-up" type="button"><span>Kembali ke atas</span><i aria-hidden="true">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 13.5v-11M3.5 7 8 2.5 12.5 7"/></svg>
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 13.5v-11M3.5 7 8 2.5 12.5 7"/></svg></i></button>
+  </div>
+  <div class="vs-wordmark-footer-mark" data-text="TOOLSME">TOOLSME</div>
+  <div class="vs-wordmark-footer-base">
+    <span class="vs-wordmark-footer-copy">&copy; 2026 Developer Portal</span>
+    <span>Jakarta <span data-vs-clock data-tz="Asia/Jakarta">--:--</span></span>
+    <nav aria-label="Legal"><a href="#faq">Privasi</a><a href="#tenang">Ketentuan</a></nav>
+  </div>
+</footer>
 
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/libs/draco/draco_decoder.js"></script>
@@ -265,6 +573,568 @@ const steps=[...document.querySelectorAll('.stp button')],tabs=[...document.quer
 function setStep(i){steps.forEach((s,k)=>s.classList.toggle('on',k===i));tabs.forEach((s,k)=>s.classList.toggle('on',k===i));$('#ind').style.transform=`translateX(${i*100}%)`;$('#p0').hidden=i!==0;$('#p1').hidden=i!==1}
 steps.forEach((s,i)=>s.onclick=()=>setStep(i));$('#send').onclick=()=>setStep(1);$('#back').onclick=()=>setStep(0);
 ['#open','#cb'].forEach(s=>$(s).onclick=e=>{if(e.currentTarget.getAttribute('href')==='#')e.preventDefault()}); /* ganti href tombol ke URL portal kamu */
+</script>
+
+<script type="importmap">{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js" } }</script>
+<script type="module">
+import * as THREE from 'three';
+
+const mq = matchMedia('(prefers-reduced-motion: reduce)');
+const STYLES = { arc: 0, wave: 1, drum: 2 };
+
+/* the bend, shared by the photos and their shadows */
+const DEFORM = /* glsl */`
+  uniform float uX, uVel, uBend, uStyle, uTime, uViewW, uHover, uW, uH;
+  float gFade = 1.;
+  vec3 deform(vec3 p, out float nxOut){
+    p.xy *= vec2(uW, uH) * (1. + uHover * .035);
+    vec3 w = p; w.x += uX;
+    float nx = w.x / (uViewW * .5);
+    float v = uVel, av = abs(v);
+    if (uStyle < .5) {
+      /* arc: the row bows away from you, and sags against the direction of travel */
+      w.z -= nx * nx * uBend * (.5 + av * 2.3);
+      w.y -= cos(clamp(nx, -2., 2.) * 1.2) * v * uBend * .55;
+      w.z -= cos(clamp(nx, -2., 2.) * 1.2) * av * uBend * .6;
+    } else if (uStyle < 1.5) {
+      /* wave: a travelling ripple whose height is the speed */
+      float a = uBend * (.18 + av * 1.25);
+      w.z += sin(w.x * .55 - uTime * 1.6) * a;
+      w.y += sin(w.x * .38 + uTime * .9) * a * .35;
+    } else {
+      /* drum: frames wrap around a cylinder that tightens with speed */
+      float k = uBend * (.11 + av * .05) / max(uViewW * .1, .01);
+      float R = 1. / max(k, 1e-4);
+      float th = w.x / R;
+      gFade = smoothstep(1.62, 1.2, abs(th));
+      th = clamp(th, -1.7, 1.7);
+      w.x = sin(th) * R; w.z = -(1. - cos(th)) * R;
+    }
+    nxOut = nx;
+    return w;
+  }`;
+
+const VERT = /* glsl */`
+  ${DEFORM}
+  varying vec2 vUv; varying float vNx; varying float vZ; varying float vFade;
+  void main(){
+    vUv = uv; float nx;
+    vec3 w = deform(position, nx);
+    vNx = nx; vZ = w.z; vFade = gFade;
+    gl_Position = projectionMatrix * viewMatrix * vec4(w, 1.);
+  }`;
+
+const FRAG = /* glsl */`
+  uniform sampler2D uTex; uniform vec2 uImg; uniform float uW, uH, uR, uVel, uHover, uFade; uniform vec3 uBg;
+  varying vec2 vUv; varying float vNx; varying float vZ; varying float vFade;
+  float sdBox(vec2 p, vec2 b, float r){ vec2 q = abs(p) - b + r; return length(max(q, 0.)) + min(max(q.x, q.y), 0.) - r; }
+  void main(){
+    vec2 p = (vUv - .5) * vec2(uW, uH);
+    float d = sdBox(p, vec2(uW, uH) * .5, uR);
+    float aa = fwidth(d) * .8;
+    float a = 1. - smoothstep(-aa, aa, d);
+    if (a < .002) discard;
+    /* cover-fit with room for parallax, which slides the photo against its frame */
+    float fa = uW / uH, ia = uImg.x / uImg.y;
+    vec2 s = fa > ia ? vec2(1., ia / fa) : vec2(fa / ia, 1.);
+    float z = 1.16 - uHover * .05;
+    vec2 uv = (vUv - .5) * s / z + .5;
+    uv.x += clamp(vNx, -1.5, 1.5) * .05;
+    float cs = clamp(uVel, -1.5, 1.5) * .0045;
+    vec3 c = vec3(texture2D(uTex, uv + vec2(cs, 0.)).r, texture2D(uTex, uv).g, texture2D(uTex, uv - vec2(cs, 0.)).b);
+    /* depth fog toward the stage and a whisper of edge light */
+    c = mix(c, uBg, clamp(-vZ * .028, 0., .2));
+    c += smoothstep(-2.5 * aa - .02, 0., d) * .05;
+    gl_FragColor = vec4(c, a * uFade * vFade);
+    #include <colorspace_fragment>
+  }`;
+
+const SHADOW_FRAG = /* glsl */`
+  #define PAD 1.3
+  uniform float uW, uH, uR, uFade, uHover; uniform vec3 uInk;
+  varying vec2 vUv; varying float vFade;
+  float sdBox(vec2 p, vec2 b, float r){ vec2 q = abs(p) - b + r; return length(max(q, 0.)) + min(max(q.x, q.y), 0.) - r; }
+  void main(){
+    vec2 p = (vUv - .5) * vec2(uW, uH);
+    vec2 b = vec2(uW, uH) * .5 - PAD * .5;                 /* the frame's own half-size */
+    float d = sdBox(p, b - vec2(.12, .02), uR);
+    float blur = .42 + uHover * .1;
+    float a = (1. - smoothstep(-blur, blur, d + .05)) * (.2 + uHover * .06);
+    a += (1. - smoothstep(-.03, .09, sdBox(p, b, uR))) * .07;  /* tight contact line */
+    gl_FragColor = vec4(uInk, a * uFade * vFade * vFade);
+  }`;
+const SHADOW_VERT = /* glsl */`
+  ${DEFORM}
+  varying vec2 vUv; varying float vFade;
+  void main(){ vUv = uv; float nx; vec3 p = position; vec3 w = deform(p, nx); vFade = gFade; w.y -= .16 + uHover * .1; w.z -= .06; gl_Position = projectionMatrix * viewMatrix * vec4(w, 1.); }`;
+
+function mount(root) {
+  if (root.vsCurvedGallery) return;
+  const canvas = root.querySelector('.vs-curved-gallery-canvas');
+  const imgs = [...root.querySelectorAll('.vs-curved-gallery-track img')];
+  if (!imgs.length) return;
+  const track = root.querySelector('.vs-curved-gallery-track');
+  /* mirror the repeats into the no-WebGL fallback row so it reads as endless there too */
+  const fillFallback = () => {
+    if (!track) return;
+    for (let guard = 0; guard < 60 && track.scrollWidth < root.clientWidth * 2; guard++) {
+      let added = false;
+      for (const img of imgs) {
+        const li = img.parentElement;
+        if (!li) break;
+        const clone = li.cloneNode(true);
+        clone.setAttribute('aria-hidden', 'true');
+        clone.querySelectorAll('img').forEach(m => { m.alt = ''; });
+        track.appendChild(clone); added = true;
+      }
+      if (!added) break;
+    }
+  };
+  const cssv = (n, d) => getComputedStyle(root).getPropertyValue(n).trim() || d;
+  const numv = (n, d) => { const v = parseFloat(cssv(n, '')); return Number.isFinite(v) ? v : d; };
+
+  let renderer;
+  try { renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, powerPreference: 'high-performance' }); }
+  catch { root.dataset.vsState = 'nogl'; return; }
+  renderer.outputColorSpace = THREE.SRGBColorSpace;
+  renderer.setClearColor(0x000000, 0);
+
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(30, 1, .1, 200);
+  const VIEW_H = 10; camera.position.z = (VIEW_H / 2) / Math.tan(THREE.MathUtils.degToRad(15));
+
+  const opt = {
+    style: STYLES[root.dataset.style] != null ? root.dataset.style : 'arc',
+    bend: numv('--vs-curved-gallery-bend', 1), gap: numv('--vs-curved-gallery-gap', .14),
+  };
+  const bg = new THREE.Color(cssv('--vs-curved-gallery-bg', '#f2eee7'));
+  const ink = bg.clone().multiplyScalar(.28).lerp(new THREE.Color('#2a1d12'), .5);
+  const geo = new THREE.PlaneGeometry(1, 1, 40, 12);
+  const shadowGeo = new THREE.PlaneGeometry(1, 1, 24, 6);
+  const loader = new THREE.TextureLoader();
+  const maxAniso = renderer.capabilities.getMaxAnisotropy();
+  /* One texture per picture, shared by every copy of it. The row is repeated as
+     many times as the viewport needs, so a page shipping only a few pictures
+     still reads as an endless band instead of three frames and empty space. */
+  const items = [];
+  const tex = imgs.map(() => null);
+  const dim = imgs.map(() => new THREE.Vector2(3, 4));
+  imgs.forEach((img, o) => {
+    loader.load(img.currentSrc || img.src, t => {
+      t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = Math.min(8, maxAniso); t.generateMipmaps = true; t.minFilter = THREE.LinearMipmapLinearFilter;
+      tex[o] = t; dim[o].set(t.image.width, t.image.height);
+      for (const it of items) if (it.o === o) { it.uniforms.uTex.value = t; it.loaded = performance.now(); }
+      kick();
+    });
+  });
+  function buildItems(n) {
+    for (let i = items.length; i < n; i++) {
+      const o = i % imgs.length;                       /* which source picture this frame shows */
+      const uniforms = {
+        uTex: { value: tex[o] }, uImg: { value: dim[o] },
+        uX: { value: 0 }, uVel: { value: 0 }, uBend: { value: 1 }, uStyle: { value: 0 }, uTime: { value: 0 }, uViewW: { value: 16 },
+        uHover: { value: 0 }, uW: { value: 3 }, uH: { value: 4 }, uR: { value: .3 }, uFade: { value: 0 }, uBg: { value: bg }, uInk: { value: ink },
+      };
+      const mat = new THREE.ShaderMaterial({ uniforms, vertexShader: VERT, fragmentShader: FRAG, transparent: true, depthWrite: false });
+      const sh = new THREE.ShaderMaterial({ uniforms, vertexShader: SHADOW_VERT, fragmentShader: SHADOW_FRAG, transparent: true, depthWrite: false });
+      const mesh = new THREE.Mesh(geo, mat), shadow = new THREE.Mesh(shadowGeo, sh);
+      mesh.frustumCulled = shadow.frustumCulled = false;
+      shadow.renderOrder = 0; mesh.renderOrder = 1;
+      /* shadow meshes are larger than the frame: the uniform W/H belong to the frame, so remap */
+      shadow.onBeforeRender = () => { uniforms.uW.value = fw + 1.3; uniforms.uH.value = fh + 1.3; };
+      shadow.onAfterRender = () => { uniforms.uW.value = fw; uniforms.uH.value = fh; };
+      scene.add(shadow, mesh);
+      items.push({ i, o, mesh, shadow, uniforms, hover: 0, hv: 0, fade: 0, loaded: tex[o] ? performance.now() - 700 : 0 });
+    }
+  }
+
+  /* ---- layout ---- */
+  let W = 1, H = 1, viewW = 16, fw = 3, fh = 4, spacing = 4, total = 40, pxToWorld = .01;
+  function layout() {
+    const size = THREE.MathUtils.clamp(numv('--vs-curved-gallery-size', .5), .2, .9);
+    fh = VIEW_H * size;
+    fw = fh * .75;
+    if (fw > viewW * .72) { fw = viewW * .72; fh = fw / .75; }       /* narrow screens: one big frame */
+    spacing = fw * (1 + THREE.MathUtils.clamp(opt.gap, 0, 1.5));
+    /* repeat the pictures until one full wrap is wider than the viewport, so the
+       loop never shows a gap no matter how few pictures the page ships */
+    const need = Math.ceil((viewW + fw * 2) / spacing) + 2;
+    buildItems(Math.ceil(need / imgs.length) * imgs.length);
+    total = spacing * items.length;
+    const r = numv('--vs-curved-gallery-radius', 18) * pxToWorld;
+    for (const it of items) {
+      it.uniforms.uW.value = fw; it.uniforms.uH.value = fh; it.uniforms.uR.value = Math.min(r, fw * .2);
+      it.uniforms.uViewW.value = viewW;
+    }
+  }
+  function resize() {
+    const dpr = Math.min(2, devicePixelRatio || 1);
+    W = Math.max(1, root.clientWidth); H = Math.max(1, root.clientHeight);
+    renderer.setPixelRatio(dpr); renderer.setSize(W, H, false);
+    camera.aspect = W / H; camera.updateProjectionMatrix();
+    viewW = VIEW_H * camera.aspect; pxToWorld = VIEW_H / H;
+    fillFallback(); layout(); kick();
+  }
+
+  /* ---- motion: position rides a spring toward a target; speed drives the bend ---- */
+  const S = { x: 0, v: 0, target: 0 };
+  let bendV = 0, lastInput = performance.now(), dragging = false, snapTimer = 0;
+  const snapOn = () => root.dataset.snap !== 'false';
+  const snap = () => { if (snapOn()) S.target = Math.round(S.target / spacing) * spacing; kick(); };
+  const goTo = i => { const n = imgs.length; i = ((i % n) + n) % n; const cur = Math.round(S.target / spacing); let d = ((i - cur) % n + n) % n; if (d > n / 2) d -= n; S.target = (cur + d) * spacing; lastInput = performance.now(); kick(); };
+
+  let drag = null;
+  root.addEventListener('pointerdown', e => {
+    if (e.button !== 0) return;
+    drag = { id: e.pointerId, x: e.clientX, y: e.clientY, t0: S.target, lx: e.clientX, lt: performance.now(), v: 0, axis: e.pointerType === 'mouse' ? 'x' : null };
+    lastInput = performance.now(); kick();
+  });
+  root.addEventListener('pointermove', e => {
+    hoverAt(e);
+    if (!drag || e.pointerId !== drag.id) return;
+    const dx = e.clientX - drag.x, dy = e.clientY - drag.y;
+    if (!drag.axis) { if (Math.hypot(dx, dy) < 6) return; drag.axis = Math.abs(dx) > Math.abs(dy) ? 'x' : 'y'; if (drag.axis === 'y') { drag = null; return; } }
+    if (!dragging) { dragging = true; root.classList.add('is-dragging'); try { root.setPointerCapture(e.pointerId); } catch {} }
+    const now = performance.now(), dt = Math.max(1, now - drag.lt);
+    drag.v = drag.v * .6 + ((e.clientX - drag.lx) / dt) * .4; drag.lx = e.clientX; drag.lt = now;
+    S.target = drag.t0 - dx * pxToWorld * 1.15;
+    lastInput = now; kick();
+  });
+  const release = e => {
+    if (!drag || (e && e.pointerId !== drag.id)) return;
+    if (dragging) {
+      const idle = performance.now() - drag.lt > 90;
+      S.target -= (idle ? 0 : drag.v) * pxToWorld * 1.15 * 380;           /* throw: ~380 ms of the release speed */
+      snap();
+    }
+    dragging = false; drag = null; root.classList.remove('is-dragging'); lastInput = performance.now(); kick();
+  };
+  root.addEventListener('pointerup', release); root.addEventListener('pointercancel', release);
+  root.addEventListener('pointerleave', () => { hovered = null; });
+  root.addEventListener('wheel', e => {
+    if (root.dataset.wheel === 'false' && Math.abs(e.deltaX) < Math.abs(e.deltaY)) return;
+    e.preventDefault();
+    const d = (Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY) * (e.deltaMode === 1 ? 16 : 1);
+    S.target += d * pxToWorld * .9; lastInput = performance.now();
+    clearTimeout(snapTimer); snapTimer = setTimeout(snap, 160); kick();
+  }, { passive: false });
+  root.tabIndex = 0;
+  root.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight') { e.preventDefault(); S.target = (Math.round(S.target / spacing) + 1) * spacing; lastInput = performance.now(); kick(); }
+    if (e.key === 'ArrowLeft') { e.preventDefault(); S.target = (Math.round(S.target / spacing) - 1) * spacing; lastInput = performance.now(); kick(); }
+  });
+
+  const ray = new THREE.Raycaster(), ndc = new THREE.Vector2();
+  let hovered = null;
+  function hoverAt(e) {
+    if (e.pointerType !== 'mouse') return;
+    const r = root.getBoundingClientRect();
+    ndc.set(((e.clientX - r.left) / r.width) * 2 - 1, -((e.clientY - r.top) / r.height) * 2 + 1);
+    /* cheap pick: the frame whose flat footprint is under the pointer (the bend is small at rest) */
+    ray.setFromCamera(ndc, camera);
+    const t = -camera.position.z / ray.ray.direction.z, px = ray.ray.origin.x + ray.ray.direction.x * t, py = ray.ray.origin.y + ray.ray.direction.y * t;
+    hovered = items.find(it => Math.abs(px - it.uniforms.uX.value) < fw / 2 && Math.abs(py) < fh / 2) || null;
+    kick();
+  }
+
+  /* ---- loop ---- */
+  let raf = 0, visible = true, lost = false, last = 0;
+  const t0 = performance.now();
+  const kick = () => { if (!raf && visible && !lost) { last = 0; raf = requestAnimationFrame(loop); } };
+  function loop(now) {
+    raf = 0; if (lost) return;
+    const dt = Math.min(1 / 30, (now - (last || now)) / 1000); last = now;
+    const still = mq.matches;
+    const drift = numv('--vs-curved-gallery-drift', .12);
+    if (!dragging && !still && drift > 0 && now - lastInput > 3500) S.target += drift * spacing * dt;
+    if (still) { S.x = S.target; S.v = 0; }
+    else { S.v += ((S.target - S.x) * 60 - S.v * 14) * dt; S.x += S.v * dt; }       /* tension 60, friction 14: a soft, weighted glide */
+    const speed = THREE.MathUtils.clamp(S.v / (spacing * 3.2), -1.6, 1.6);
+    bendV += (speed - bendV) * (1 - Math.exp(-dt * 9));
+    const style = STYLES[opt.style] ?? 0, t = (now - t0) / 1000;
+    let busy = Math.abs(S.target - S.x) > 1e-3 || Math.abs(S.v) > 1e-3 || Math.abs(bendV) > 1e-3 || (drift > 0 && !still) || style === 1;
+    for (const it of items) {
+      let x = it.i * spacing - S.x;
+      x = ((x + total / 2) % total + total) % total - total / 2;
+      const u = it.uniforms;
+      u.uX.value = x; u.uVel.value = still ? 0 : bendV; u.uBend.value = opt.bend; u.uStyle.value = style; u.uTime.value = still ? 0 : t;
+      const hv = it === hovered && !dragging ? 1 : 0;
+      it.hv += ((hv - it.hover) * 300 - it.hv * 24) * dt; it.hover += it.hv * dt;
+      u.uHover.value = still ? hv : it.hover;
+      if (it.loaded) { it.fade = Math.min(1, (now - it.loaded) / 700); u.uFade.value = 1 - Math.pow(1 - it.fade, 3); if (it.fade < 1) busy = true; }
+      if (Math.abs(it.hv) > 1e-3) busy = true;
+      it.mesh.visible = it.shadow.visible = Math.abs(x) < viewW * .5 + fw * 1.5 && !!u.uTex.value;
+    }
+    renderer.render(scene, camera);
+    if (root.dataset.vsState !== 'ready' && items.some(i => i.loaded)) root.dataset.vsState = 'ready';
+    if (visible && busy) raf = requestAnimationFrame(loop);
+  }
+
+  canvas.addEventListener('webglcontextlost', e => { e.preventDefault(); lost = true; cancelAnimationFrame(raf); raf = 0; root.dataset.vsState = 'lost'; });
+  canvas.addEventListener('webglcontextrestored', () => { lost = false; root.dataset.vsState = 'ready'; kick(); });
+  new IntersectionObserver(([en]) => { visible = en.isIntersecting; if (visible) kick(); }).observe(root);
+  new ResizeObserver(resize).observe(root);
+  mq.addEventListener?.('change', kick);
+  resize();
+
+  root.vsCurvedGallery = {
+    set(o = {}) {
+      if (o.style && STYLES[o.style] != null) { opt.style = o.style; root.dataset.style = o.style; }
+      if (o.bend != null) { opt.bend = +o.bend; root.style.setProperty('--vs-curved-gallery-bend', opt.bend); }
+      if (o.gap != null) {                       /* keep the same picture centred while the spacing changes */
+        const it = S.target / spacing, ix = S.x / spacing; opt.gap = +o.gap; root.style.setProperty('--vs-curved-gallery-gap', opt.gap);
+        layout(); S.target = it * spacing; S.x = ix * spacing;
+      }
+      kick(); return { ...opt };
+    },
+    next: () => goTo(Math.round(S.target / spacing) + 1),
+    prev: () => goTo(Math.round(S.target / spacing) - 1),
+    goTo,
+  };
+}
+const boot = () => document.querySelectorAll('.vs-curved-gallery').forEach(mount);
+document.readyState === 'loading' ? document.addEventListener('DOMContentLoaded', boot) : boot();
+</script>
+
+<!-- FAQ Accordion -->
+<script>
+(() => {
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)');
+  let uid = 0;
+  function init(root) {
+    if (root.dataset.vsReady) return; root.dataset.vsReady = '1';
+    const multiple = () => root.hasAttribute('data-multiple');
+    const items = [...root.querySelectorAll('.vs-faq-accordion-item')].map(el => {
+      const btn = el.querySelector('.vs-faq-accordion-q'), panel = el.querySelector('.vs-faq-accordion-a'), inner = panel.querySelector('.vs-faq-accordion-inner');
+      const id = panel.id || (panel.id = `vs-faq-accordion-a-${++uid}`);
+      btn.id = btn.id || `${id}-q`;
+      btn.setAttribute('aria-controls', id); panel.setAttribute('role', 'region'); panel.setAttribute('aria-labelledby', btn.id);
+      return { el, btn, panel, inner, s: { x: 0, v: 0, t: 0 }, H: 0, open: false, done: true, at: 0 };
+    });
+    const K = 260, C = 2 * Math.sqrt(K);   // critically damped: no bounce at the bottom edge
+    let raf = 0, last = 0, stamp = 0;
+    // the frame loop only WRITES (height, transform, opacity); every read happens once, at toggle time
+    const paint = it => {
+      const h = Math.max(0, it.s.x);
+      it.panel.style.height = h.toFixed(2) + 'px';
+      const p = it.H ? Math.min(1, h / it.H) : 0;
+      it.inner.style.opacity = Math.min(1, Math.max(0, (p - 0.12) / 0.6)).toFixed(3);
+      it.inner.style.transform = `translate3d(0,${((1 - p) * -12).toFixed(2)}px,0)`;
+    };
+    const settle = it => {
+      it.s.x = it.s.t; it.s.v = 0; paint(it);
+      if (it.open) { it.panel.style.height = 'auto'; it.inner.style.transform = ''; it.inner.style.opacity = ''; }
+      else it.panel.setAttribute('hidden', 'until-found');
+    };
+    const tick = now => {
+      const dt = Math.min(0.05, (now - last) / 1000); last = now;
+      const n = Math.max(1, Math.ceil(dt * 240)), h = dt / n;
+      let moving = false;
+      for (const it of items) {
+        if (it.done) continue;
+        for (let i = 0; i < n; i++) { it.s.v += (-K * (it.s.x - it.s.t) - C * it.s.v) * h; it.s.x += it.s.v * h; }
+        if (Math.abs(it.s.x - it.s.t) < 0.3 && Math.abs(it.s.v) < 2) { it.done = true; settle(it); } else { paint(it); moving = true; }
+      }
+      raf = moving ? requestAnimationFrame(tick) : 0;
+    };
+    const set = (it, open) => {
+      if (it.open === open) return;
+      it.s.x = it.panel.getBoundingClientRect().height;   // start from whatever is on screen (auto, or mid-flight)
+      it.open = open; it.el.classList.toggle('is-open', open); it.btn.setAttribute('aria-expanded', String(open));
+      if (open) { it.panel.removeAttribute('hidden'); it.at = ++stamp; }
+      it.H = it.inner.offsetHeight; it.s.t = open ? it.H : 0; it.done = false;
+      if (reduce.matches) { settle(it); it.done = true; return; }
+      if (!raf) { last = performance.now(); raf = requestAnimationFrame(tick); }
+    };
+    const sync = () => root.classList.toggle('has-open', items.some(o => o.open));
+    const toggle = (it, force) => {
+      const open = force ?? !it.open;
+      if (open && !multiple()) items.forEach(o => o !== it && set(o, false));
+      set(it, open); sync();
+    };
+    items.forEach((it, i) => {
+      it.btn.setAttribute('aria-expanded', 'false');
+      it.panel.setAttribute('hidden', 'until-found');
+      it.btn.addEventListener('click', () => toggle(it));
+      it.panel.addEventListener('beforematch', () => toggle(it, true));
+      it.btn.addEventListener('keydown', e => {
+        const j = { ArrowDown: i + 1, ArrowUp: i - 1, Home: 0, End: items.length - 1 }[e.key];
+        if (j === undefined) return;
+        e.preventDefault(); items[(j + items.length) % items.length].btn.focus();
+      });
+      if (it.el.hasAttribute('data-open')) { it.open = true; it.at = ++stamp; it.el.classList.add('is-open'); it.btn.setAttribute('aria-expanded', 'true'); it.panel.removeAttribute('hidden'); it.panel.style.height = 'auto'; }
+    });
+    // switching back to single-open keeps only the most recently opened answer
+    new MutationObserver(() => {
+      if (multiple()) return;
+      const open = items.filter(o => o.open).sort((a, b) => b.at - a.at);
+      open.slice(1).forEach(o => set(o, false)); sync();
+    }).observe(root, { attributes: true, attributeFilter: ['data-multiple'] });
+    root.vsAccordion = { open: i => items[i] && toggle(items[i], true), close: i => items[i] && toggle(items[i], false) };
+    sync();
+  }
+  const boot = () => document.querySelectorAll('.vs-faq-accordion').forEach(init);
+  document.readyState === 'loading' ? document.addEventListener('DOMContentLoaded', boot) : boot();
+})();
+</script>
+
+<!-- Wordmark Footer -->
+<script>
+(() => {
+  if (window.vsWordmarkFooter) return;
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)');
+  const live = new Set(); let raf = 0, last = 0;
+  const tick = now => {
+    const dt = Math.min(.064, (now - last) / 1000 || .016); last = now;
+    for (const s of live) if (!s.update(dt)) live.delete(s);
+    raf = live.size ? requestAnimationFrame(tick) : 0;
+  };
+  const wake = s => { live.add(s); if (!raf) { last = performance.now(); raf = requestAnimationFrame(tick); } };
+  const sp = (x, k, z, eps = .0008) => ({ x, v: 0, g: x, k, z, eps });
+  const step = (s, h) => { s.v += (-s.k * (s.x - s.g) - 2 * Math.sqrt(s.k) * s.z * s.v) * h; s.x += s.v * h; };
+  const clamp = (x, a, b) => Math.min(b, Math.max(a, x));
+  const scrollParent = el => {
+    for (let p = el.parentElement; p && p !== document.body && p !== document.documentElement; p = p.parentElement) {
+      const o = getComputedStyle(p).overflowY; if ((o === 'auto' || o === 'scroll') && p.scrollHeight > p.clientHeight) return p;
+    }
+    return null;
+  };
+
+  function mount(foot) {
+    if (foot.__vsWf) return foot.__vsWf;
+    const mark = foot.querySelector('.vs-wordmark-footer-mark');
+    const sel = foot.dataset.scroller;
+    let scroller = sel ? document.querySelector(sel) : scrollParent(foot);
+    const evTarget = () => scroller || window;
+    let L = [], word = null, fs = 100, hover = null, glide = null;
+
+    function build() {
+      const text = (mark.dataset.text || mark.textContent).trim();
+      mark.dataset.text = text;
+      mark.innerHTML = `<span class="vs-wordmark-footer-sr">${text}</span><span class="vs-wordmark-footer-word" aria-hidden="true">` +
+        [...text].map(c => `<span class="vs-wordmark-footer-l"><span>${c === ' ' ? '&nbsp;' : c}</span></span>`).join('') + '</span>';
+      word = mark.lastChild;
+      L = [...word.children].map(o => ({ o, i: o.firstChild, s: sp(0, 150, .7), lift: sp(0, 320, .55) }));
+      fit(); progress(true);
+    }
+    /* size the wordmark so it spans the footer's inner width exactly */
+    function fit() {
+      if (!word) return;
+      mark.style.fontSize = '100px';
+      const w = word.getBoundingClientRect().width, avail = mark.clientWidth;
+      fs = w ? Math.max(24, 100 * avail / w) : 100;
+      mark.style.fontSize = fs.toFixed(2) + 'px';
+    }
+    /* scroll progress of the wordmark into view, spread across the letters */
+    function progress(snap) {
+      const r = mark.getBoundingClientRect(), vb = scroller ? scroller.getBoundingClientRect().bottom : innerHeight;
+      const p = clamp((vb - r.top) / (r.height * .98), 0, 1), n = L.length, S = n > 1 ? .55 : 0;
+      L.forEach((l, k) => {
+        l.s.g = clamp((p - (n > 1 ? k / (n - 1) : 0) * S) / (1 - S), 0, 1);
+        if (snap === true || reduce.matches) { l.s.x = l.s.g; l.s.v = 0; }
+      });
+      wake(api);
+    }
+    const api = {
+      update(dt) {
+        const n = Math.max(1, Math.round(dt * 240)), h = dt / n;
+        let moving = false;
+        if (glide) {
+          step(glide, dt);
+          if (Math.abs(glide.v) < 2 && Math.abs(glide.x) < .5) { setTop(0); glide = null; } else { setTop(glide.x); moving = true; }
+        }
+        const mode = foot.dataset.reveal || 'rise', hx = hover;
+        const wr = hx != null ? word.getBoundingClientRect() : null;
+        for (const l of L) {
+          if (wr) { const c = l.o.offsetLeft + l.o.offsetWidth / 2, d = (hx - wr.left - c) / (fs * .55); l.lift.g = Math.exp(-d * d); }
+          else l.lift.g = 0;
+          for (const s of [l.s, l.lift]) {
+            if (Math.abs(s.v) < s.eps && Math.abs(s.x - s.g) < s.eps) { s.x = s.g; s.v = 0; continue; }
+            moving = true;
+            if (reduce.matches) { s.x = s.g; s.v = 0; continue; }
+            for (let i = 0; i < n; i++) step(s, h);
+          }
+          const t = l.s.x, u = 1 - t, lift = -l.lift.x * fs * .06;
+          if (mode === 'mask') {            // the window slides up over a letter that stays put
+            l.o.style.transform = `translate3d(0,calc(${(u * 100).toFixed(3)}% + ${lift.toFixed(2)}px),0)`;
+            l.i.style.transform = `translate3d(0,${(-u * 100).toFixed(3)}%,0)`; l.i.style.opacity = '';
+          } else if (mode === 'scale') {    // letters grow up from the baseline
+            l.o.style.transform = `translate3d(0,${lift.toFixed(2)}px,0)`;
+            l.i.style.transform = `translate3d(0,${(u * 18).toFixed(3)}%,0) scale(${(.28 + .72 * t).toFixed(4)})`;
+            l.i.style.opacity = clamp(t * 1.6, 0, 1).toFixed(3);
+          } else {                          // rise: out of a mask, with a slight lean
+            l.o.style.transform = `translate3d(0,${lift.toFixed(2)}px,0)`;
+            l.i.style.transform = `translate3d(0,${(u * 108).toFixed(3)}%,0) rotate(${(u * 6).toFixed(3)}deg)`; l.i.style.opacity = '';
+          }
+        }
+        return moving;
+      },
+      refresh: () => build(),
+    };
+
+    const setTop = y => scroller ? (scroller.scrollTop = y) : window.scrollTo(0, y);
+    const getTop = () => scroller ? scroller.scrollTop : scrollY;
+    const up = foot.querySelector('.vs-wordmark-footer-up');
+    up && up.addEventListener('click', e => {
+      e.preventDefault();
+      if (reduce.matches) { setTop(0); return; }
+      glide = { x: getTop(), v: 0, g: 0, k: 70, z: 1 }; wake(api);
+    });
+    const stop = () => { glide = null; };
+    const listen = t => { t.addEventListener('scroll', progress, { passive: true }); t.addEventListener('wheel', stop, { passive: true }); t.addEventListener('touchstart', stop, { passive: true }); };
+    listen(evTarget());
+
+    mark.addEventListener('pointermove', e => { if (e.pointerType === 'mouse') { hover = e.clientX; wake(api); } });
+    mark.addEventListener('pointerleave', () => { hover = null; wake(api); });
+
+    /* optional live clock: <span data-vs-clock data-tz="Europe/London"></span> */
+    const clock = foot.querySelector('[data-vs-clock]');
+    if (clock) {
+      let f; try { f = new Intl.DateTimeFormat('en-GB', { hour: '2-digit', minute: '2-digit', timeZone: clock.dataset.tz || undefined }); } catch (_) { f = new Intl.DateTimeFormat('en-GB', { hour: '2-digit', minute: '2-digit' }); }
+      const put = () => { clock.textContent = f.format(new Date()); }; put(); setInterval(put, 20000);
+    }
+
+    new MutationObserver(() => { build(); }).observe(foot, { attributes: true, attributeFilter: ['data-reveal'] });
+    new MutationObserver(ms => { if (ms.some(m => m.attributeName === 'data-text' && mark.dataset.text !== (word && word.textContent.replace(/\u00A0/g, ' ')))) build(); })
+      .observe(mark, { attributes: true, attributeFilter: ['data-text'] });
+    new ResizeObserver(() => { fit(); progress(); }).observe(foot);
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { fit(); progress(); });
+    addEventListener('load', () => { if (!sel) { const s = scrollParent(foot); if (s && s !== scroller) { scroller = s; listen(s); } } fit(); progress(); });
+
+    foot.__vsWf = api;
+    build();
+    return api;
+  }
+  const init = () => document.querySelectorAll('.vs-wordmark-footer').forEach(mount);
+  document.readyState === 'loading' ? document.addEventListener('DOMContentLoaded', init) : init();
+  window.vsWordmarkFooter = { mount };
+})();
+</script>
+
+<!-- footer: pakai scroll Lenis situs, bukan spring bawaan komponen (bentrok sama lenis) -->
+<script>
+document.addEventListener('click', e => {
+  const t = e.target;
+  const up = t && t.closest ? t.closest('.vs-wordmark-footer-up') : null;
+  const rm = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (up) {
+    e.preventDefault(); e.stopPropagation();
+    if (rm()) return void scrollTo(0, 0);
+    if (typeof lenis !== 'undefined' && lenis) lenis.scrollTo(0, { duration: 1.8 });
+    else scrollTo({ top: 0, behavior: 'smooth' });
+    return;
+  }
+  const a = t && t.closest ? t.closest('.vs-wordmark-footer a[href^="#"]') : null;
+  if (!a) return;
+  const h = a.getAttribute('href');
+  if (h === '#' || h.length < 2) return;
+  e.preventDefault();
+  if (h === '#top') {
+    if (rm()) return void scrollTo(0, 0);
+    if (typeof lenis !== 'undefined' && lenis) lenis.scrollTo(0, { duration: 1.8 });
+    else scrollTo({ top: 0, behavior: 'smooth' });
+  } else goto(h);
+}, true);
 </script>
 </body>
 </html>
