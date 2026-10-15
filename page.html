@@ -8,6 +8,9 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">
+    <!-- Fontshare: General Sans (untuk komponen custom cursor) -->
+    <link rel="preconnect" href="https://api.fontshare.com" crossorigin>
+    <link href="https://api.fontshare.com/v2/css?f[]=general-sans@500,600&display=swap" rel="stylesheet">
     <!-- Font Awesome 6 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <!-- SweetAlert2 -->
@@ -387,7 +390,53 @@ div.swal2-popup{border-radius:0!important;background:var(--card)!important;font-
 .rcp div{display:flex;justify-content:space-between;gap:20px;padding:12px 0;border-bottom:1px solid var(--line)}
 .rcp span{font-style:italic;color:var(--mute)}.rcp b{font:13px var(--mono);align-self:center}
 .rn{margin-top:18px;font-size:17px;font-style:italic;color:var(--mute)}
+  /* KEY GATE (akses fitur Alight Motion) */
+  .key-gate-hint{margin-top:14px;font-size:15px;font-style:italic;color:var(--mute);text-align:center}
+  .key-active{display:flex;align-items:center;gap:10px;margin-bottom:28px;padding:12px 16px;border:1px solid rgba(63,178,127,.35);background:rgba(63,178,127,.08);border-radius:12px;font:13px var(--mono);color:#2f7a5c}
+  .key-active i.fa-circle-check{color:#3fb27f}
+  .key-active .key-out{margin-left:auto;color:var(--mute);text-decoration:underline;text-underline-offset:3px;font-family:var(--f);font-style:italic;font-size:14px;min-height:auto}
+  .key-active .key-out:hover{color:var(--ink)}
     </style>
+<style>
+  :root {
+    --vs-blend-cursor-size: 14px;
+    --vs-blend-cursor-grow: 96px;
+    --vs-blend-cursor-stiffness: 420;
+    --vs-blend-cursor-damping: .74;
+    --vs-blend-cursor-pull: .22;
+    --vs-blend-cursor-stretch: .5;
+    --vs-blend-cursor-color: #fff;
+  }
+  .vs-blend-cursor {
+    position: fixed; left: 0; top: 0; width: 0; height: 0; z-index: 2147483000;
+    pointer-events: none; mix-blend-mode: difference; opacity: 0;
+    transition: opacity .22s cubic-bezier(.2, 0, 0, 1);
+    will-change: transform;
+  }
+  .vs-blend-cursor.is-on { opacity: 1; }
+  .vs-blend-cursor.is-dim { opacity: .45; }
+  .vs-blend-cursor-disc, .vs-blend-cursor-caret {
+    position: absolute; left: 0; top: 0; display: block;
+    background: var(--vs-blend-cursor-color); will-change: transform;
+    backface-visibility: hidden;
+  }
+  .vs-blend-cursor-disc {
+    width: var(--vs-blend-cursor-grow); height: var(--vs-blend-cursor-grow);
+    margin: calc(var(--vs-blend-cursor-grow) / -2) 0 0 calc(var(--vs-blend-cursor-grow) / -2);
+    border-radius: 50%;
+    transform: scale(0);
+  }
+  .vs-blend-cursor-caret {
+    width: 2px; height: 40px; margin: -20px 0 0 -1px; border-radius: 1px;
+    transform: scaleY(0);
+  }
+  @media (hover: hover) and (pointer: fine) {
+    html.vs-blend-cursor-live, html.vs-blend-cursor-live * { cursor: none !important; }
+    html.vs-blend-cursor-live [data-vs-blend-cursor="none"],
+    html.vs-blend-cursor-live [data-vs-blend-cursor="none"] * { cursor: auto !important; }
+  }
+  @media not all and (pointer: fine) { .vs-blend-cursor { display: none; } }
+</style>
 </head>
 <body>
 <div class="app">
@@ -460,17 +509,35 @@ div.swal2-popup{border-radius:0!important;background:var(--card)!important;font-
                 <p class="lab"><i class="dot"></i>Alight Motion Pro</p>
                 <h1>Portal Aktivasi <em>Lisensi</em></h1>
                 <p class="sub">Kelola keanggotaan dan verifikasi akun dengan cepat & aman.</p>
-                <div class="steps">
+                <!-- KEY GATE -->
+                <form id="form-key">
+                    <div class="input-wrapper">
+                        <label for="accessKey">Key akses lisensi</label>
+                        <div class="input-field">
+                            <i class="input-icon fa-solid fa-key" aria-hidden="true"></i>
+                            <input type="text" id="accessKey" required placeholder="AMPRO-XXXXX-XXXXX-XXXXX-XXXXX" autocomplete="off" autocapitalize="characters" spellcheck="false" data-vs-blend-cursor="none">
+                        </div>
+                    </div>
+                    <div class="progress-bar" id="key-progress" hidden><div class="progress-bar-fill"></div></div>
+                    <button type="submit" id="btn-key" class="btn"><span>Aktifkan Akses</span></button>
+                    <p class="key-gate-hint">Masukkan key untuk membuka fitur ini. Key terikat ke 1 perangkat dan berlaku sesuai masa aktif.</p>
+                </form>
+                <div id="key-active" class="key-active hidden">
+                    <i class="fa-solid fa-circle-check" aria-hidden="true"></i>
+                    <span id="key-active-text">Akses aktif</span>
+                    <button type="button" class="key-out" id="btn-key-out">Keluar</button>
+                </div>
+                <div class="steps hidden" id="ampro-steps">
                     <div id="step-1-indicator" class="stp on"><span class="n">1</span><span>Kirim Link</span></div>
                     <div id="step-2-indicator" class="stp"><span class="n">2</span><span>Verifikasi</span></div>
                 </div>
                 <!-- Stage 1 Form -->
-<form id="form-send">
+<form id="form-send" class="hidden">
                     <div class="input-wrapper">
                         <label for="email">Email target</label>
                         <div class="input-field">
                             <i class="input-icon fa-solid fa-envelope" aria-hidden="true"></i>
-                            <input type="email" id="email" required placeholder="namaemail@gmail.com" autocomplete="email">
+                            <input type="email" id="email" required placeholder="namaemail@gmail.com" autocomplete="email" data-vs-blend-cursor="none">
                         </div>
                     </div>
                     <div class="progress-bar" id="send-progress" hidden><div class="progress-bar-fill"></div></div>
@@ -483,7 +550,7 @@ div.swal2-popup{border-radius:0!important;background:var(--card)!important;font-
                         <label for="magicLink">Magic link / oobCode</label>
                         <div class="input-field">
                             <i class="input-icon fa-solid fa-link" aria-hidden="true"></i>
-                            <textarea id="magicLink" rows="3" required placeholder="https://alight-creative.firebaseapp.com/__/auth/action?mode=signIn&oobCode=..."></textarea>
+                            <textarea id="magicLink" rows="3" required placeholder="https://alight-creative.firebaseapp.com/__/auth/action?mode=signIn&oobCode=..." data-vs-blend-cursor="none"></textarea>
                             <button type="button" class="copy-btn" data-target="magicLink" aria-label="Salin magic link"><i class="fa-solid fa-copy"></i></button>
                         </div>
                     </div>
@@ -528,13 +595,160 @@ div.swal2-popup{border-radius:0!important;background:var(--card)!important;font-
     <div class="cmd-palette" id="cmd-palette" role="dialog" aria-label="Command Palette" aria-hidden="true">
         <div class="cmd-header">
             <div class="cmd-icon"><i class="fa-solid fa-command"></i></div>
-            <input type="search" class="cmd-search" id="cmd-search" placeholder="Cari perintah atau navigasi..." autocomplete="off" spellcheck="false">
+            <input type="search" class="cmd-search" id="cmd-search" placeholder="Cari perintah atau navigasi..." autocomplete="off" spellcheck="false" data-vs-blend-cursor="none">
             <kbd class="cmd-shortcut">⌘K</kbd>
         </div>
         <div class="cmd-list" id="cmd-list"></div>
     </div>
 
 </div>
+
+<!-- Blend Cursor (kursor difference-blend; sentuh tetap pakai kursor native) -->
+<div class="vs-blend-cursor" aria-hidden="true"><i class="vs-blend-cursor-disc"></i><i class="vs-blend-cursor-caret"></i></div>
+
+<script>
+(() => {
+  const el = document.querySelector('.vs-blend-cursor');
+  if (!el || el.__vs) return; el.__vs = 1;
+  const root = document.documentElement;
+  const disc = el.querySelector('.vs-blend-cursor-disc'), caret = el.querySelector('.vs-blend-cursor-caret');
+  const fine = matchMedia('(hover: hover) and (pointer: fine)');
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)');
+  const SEL = 'a[href], button, [role="button"], label[for], summary, select, input[type="submit"], input[type="button"], [data-vs-blend-cursor]';
+
+  let cfg = {};
+  const read = () => {
+    const cs = getComputedStyle(el), n = (k, d) => { const v = parseFloat(cs.getPropertyValue(k)); return isNaN(v) ? d : v; };
+    cfg = {
+      size: n('--vs-blend-cursor-size', 14), grow: n('--vs-blend-cursor-grow', 88),
+      k: Math.max(20, n('--vs-blend-cursor-stiffness', 420)), z: Math.max(.1, n('--vs-blend-cursor-damping', .74)),
+      pull: n('--vs-blend-cursor-pull', .22), stretch: n('--vs-blend-cursor-stretch', .5),
+    };
+    kick();
+  };
+
+  // springs: position (x, y), disc scale (s, relative to --grow), caret (c, 0-1)
+  const P = { x: 0, y: 0, vx: 0, vy: 0 };
+  const S = { s: 0, v: 0 }, C = { s: 0, v: 0 };
+  let px = 0, py = 0, shown = false, pressed = false, live = false, raf = 0, last = 0;
+  let cur = null, mode = 'dot', rect = null, line = null, growPx = 0;
+
+  const measure = () => {
+    if (!cur) return;
+    rect = cur.getBoundingClientRect();
+    if (mode === 'text') {
+      const cs = getComputedStyle(cur), fs = parseFloat(cs.fontSize) || 16;
+      const lh = parseFloat(cs.lineHeight) || fs * 1.2;
+      line = { lh, top: rect.top + (parseFloat(cs.paddingTop) || 0) + (parseFloat(cs.borderTopWidth) || 0), n: 0 };
+      line.n = Math.max(1, Math.round((rect.height - (parseFloat(cs.paddingTop) || 0) - (parseFloat(cs.paddingBottom) || 0)) / lh));
+      const h = Math.round(Math.min(lh, fs * 1.25));
+      caret.style.height = h + 'px'; caret.style.marginTop = -h / 2 + 'px';
+    }
+  };
+  const resolve = (t) => {
+    const hit = t && t.closest ? t.closest(SEL) : null;
+    if (hit === cur) return;
+    cur = hit;
+    const kind = hit ? (hit.getAttribute('data-vs-blend-cursor') || '') : '';
+    const off = hit && (hit.disabled || hit.getAttribute('aria-disabled') === 'true');
+    mode = !hit ? 'dot' : kind === 'none' ? 'none' : kind === 'text' ? 'text' : off ? 'off' : 'grow';
+    growPx = hit && parseFloat(hit.getAttribute('data-vs-blend-cursor-size')) || 0;
+    el.classList.toggle('is-dim', mode === 'off');
+    measure(); kick();
+  };
+
+  const show = (on) => {
+    if (on === shown) return; shown = on;
+    el.classList.toggle('is-on', on);
+    if (on && !live) { live = true; root.classList.add('vs-blend-cursor-live'); }
+    kick();
+  };
+
+  const step = (o, key, target, k, z, dt) => {
+    const c = 2 * Math.sqrt(k) * z;
+    o['v' + key] += (k * (target - o[key]) - c * o['v' + key]) * dt;
+    o[key] += o['v' + key] * dt;
+  };
+  const spring1 = (o, target, k, z, dt) => { const c = 2 * Math.sqrt(k) * z; o.v += (k * (target - o.s) - c * o.v) * dt; o.s += o.v * dt; };
+
+  const frame = (now) => {
+    raf = 0;
+    let dt = Math.min(1 / 30, (now - last) / 1000 || 1 / 60); last = now;
+    const rm = reduce.matches;
+    // targets
+    let tx = px, ty = py, ts = cfg.size / cfg.grow, tc = 0;
+    if (mode === 'grow' && rect) {
+      const g = growPx || cfg.grow;
+      const cx = rect.left + rect.width / 2, cy = rect.top + rect.height / 2;
+      const lim = g * .32;
+      tx = px + Math.max(-lim, Math.min(lim, (cx - px) * cfg.pull));
+      ty = py + Math.max(-lim, Math.min(lim, (cy - py) * cfg.pull * 1.6));
+      ts = g / cfg.grow;
+    } else if (mode === 'text' && line) {
+      const i = Math.max(0, Math.min(line.n - 1, Math.floor((py - line.top) / line.lh)));
+      ty = line.top + (i + .5) * line.lh; ts = 0; tc = 1;
+    } else if (mode === 'none') { ts = 0; }
+    if (pressed) { ts *= mode === 'grow' ? .82 : .6; tc *= .8; }
+    if (!shown) { ts = 0; tc = 0; }
+
+    // integrate (two sub-steps keep stiff springs stable at 30 fps)
+    const k = rm ? 2000 : cfg.k, z = rm ? 1 : cfg.z;
+    for (let i = 0; i < 2; i++) {
+      const h = dt / 2;
+      if (rm) { P.x = tx; P.y = ty; P.vx = P.vy = 0; } else { step(P, 'x', tx, k, z, h); step(P, 'y', ty, k, z, h); }
+      spring1(S, ts, rm ? 900 : 340, rm ? 1 : .58, h);
+      spring1(C, tc, rm ? 900 : 520, rm ? 1 : .7, h);
+    }
+    const s = Math.max(0, S.s), c = Math.max(0, C.s);
+
+    // squash & stretch along the direction of travel, fading out as the disc grows
+    const speed = Math.hypot(P.vx, P.vy);
+    const big = Math.min(1, Math.max(0, (s * cfg.grow - cfg.size) / Math.max(1, cfg.grow - cfg.size)));
+    const st = rm ? 0 : Math.min(.6, speed / 2600) * cfg.stretch * (1 - .7 * big);
+    const a = Math.atan2(P.vy, P.vx);
+    el.style.transform = `translate3d(${P.x.toFixed(2)}px, ${P.y.toFixed(2)}px, 0)`;
+    disc.style.transform = `rotate(${a.toFixed(4)}rad) scale(${(s * (1 + st)).toFixed(4)}, ${(s * (1 - st * .55)).toFixed(4)})`;
+    caret.style.transform = `scale(${(1 + (1 - c) * 1.5).toFixed(3)}, ${c.toFixed(4)})`;
+
+    const settled = Math.abs(tx - P.x) < .05 && Math.abs(ty - P.y) < .05 && speed < .5 &&
+      Math.abs(ts - S.s) < .001 && Math.abs(S.v) < .01 && Math.abs(tc - C.s) < .001 && Math.abs(C.v) < .01;
+    if (!settled) raf = requestAnimationFrame(frame);
+  };
+  function kick() { if (!raf && fine.matches) { last = performance.now(); raf = requestAnimationFrame(frame); } }
+
+  const onMove = (e) => {
+    if (e.pointerType === 'touch') { hideTouch(); return; }
+    px = e.clientX; py = e.clientY;
+    if (!shown) { if (!live || !S.s) { P.x = px; P.y = py; P.vx = P.vy = 0; } show(true); }
+    resolve(e.target); kick();
+  };
+  const hideTouch = () => { show(false); live = false; root.classList.remove('vs-blend-cursor-live'); };
+  const onDown = (e) => { if (e.pointerType === 'touch') return hideTouch(); if (e.button === 0) { pressed = true; kick(); } };
+  const onUp = () => { if (pressed) { pressed = false; kick(); } };
+  const onScroll = () => { if (!shown) return; const t = document.elementFromPoint(px, py); cur = cur && t && cur.contains(t) ? cur : null; if (cur) measure(); else resolve(t); kick(); };
+
+  const enable = () => {
+    read();
+    // difference blends against the painted backdrop: a page that never sets a background has a
+    // transparent one, and a white cursor would vanish on it. Paint the browser default explicitly.
+    const clear = (e) => { const c = getComputedStyle(e).backgroundColor; return c === 'transparent' || /rgba\(.*,\s*0\)$/.test(c); };
+    if (clear(root) && clear(document.body)) root.style.backgroundColor = '#fff';
+    addEventListener('pointermove', onMove, { passive: true });
+    addEventListener('pointerdown', onDown, { passive: true });
+    addEventListener('pointerup', onUp, { passive: true });
+    addEventListener('pointercancel', onUp, { passive: true });
+    addEventListener('scroll', onScroll, { passive: true, capture: true });
+    addEventListener('resize', () => { measure(); kick(); }, { passive: true });
+    addEventListener('blur', () => { pressed = false; show(false); });
+    root.addEventListener('mouseleave', () => { pressed = false; show(false); });
+    document.addEventListener('visibilitychange', () => { if (document.hidden) show(false); });
+    new MutationObserver(read).observe(root, { attributes: true, attributeFilter: ['style', 'class', 'data-stage'] });
+    reduce.addEventListener?.('change', kick);
+  };
+  if (fine.matches) enable();
+  else fine.addEventListener?.('change', function once() { if (fine.matches) { fine.removeEventListener('change', once); enable(); } });
+})();
+</script>
 
 <script>
 /* ==========================================================================
@@ -566,6 +780,14 @@ const Store = (() => {
     }
   };
 })();
+
+/* ==========================================================================
+   KONFIGURASI BACKEND
+   Kosongkan kalau web & backend 1 domain (Cloudflare Pages/Worker atau server.py).
+   Isi URL lengkap kalau dipisah, mis:
+   const API_BASE = 'https://ampro-portal.namasubdomain.workers.dev';
+   ========================================================================== */
+const API_BASE = '';
 
 /* ==========================================================================
    API LAYER - With Retry, Timeout, Error Normalization
@@ -610,15 +832,20 @@ const API = (() => {
     }
   }
 
+  const authHeaders = () => {
+    const key = typeof AccessKey !== 'undefined' && AccessKey.get();
+    return key ? { 'x-access-key': key, 'x-device-id': AccessKey.deviceId() } : {};
+  };
+
   return {
-    sendLink: (email) => request('https://satriam.satriadeveloperz.workers.dev/api/satriam/send-link', {
+    sendLink: (email) => request(`${API_BASE}/api/send-link`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', ...authHeaders() },
       body: JSON.stringify({ email })
     }),
-    verifyLink: (email, magicLink) => request('https://satriam.satriadeveloperz.workers.dev/api/satriam/verify-link', {
+    verifyLink: (email, magicLink) => request(`${API_BASE}/api/verify-link`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', ...authHeaders() },
       body: JSON.stringify({ email, magicLink })
     }),
     APIError
@@ -1161,12 +1388,154 @@ const Forms = (() => {
 })();
 
 /* ==========================================================================
+   ACCESS KEY GATE - Kunci akses fitur Alight Motion
+   Key dicek ke database (keys.db) lewat server Python (server.py).
+   ========================================================================== */
+const AccessKey = (() => {
+  const SESSION_KEY = 'ampro_key_v1';
+  const DEVICE_KEY = 'ampro_device_v1';
+  const BASE = API_BASE;
+
+  const formKey = document.getElementById('form-key');
+  const keyInput = document.getElementById('accessKey');
+  const btnKey = document.getElementById('btn-key');
+  const keyProgress = document.getElementById('key-progress');
+  const stepsEl = document.getElementById('ampro-steps');
+  const formSend = document.getElementById('form-send');
+  const formVerify = document.getElementById('form-verify');
+  const badge = document.getElementById('key-active');
+  const badgeText = document.getElementById('key-active-text');
+  const btnOut = document.getElementById('btn-key-out');
+  const keyWrapper = keyInput.closest('.input-wrapper');
+
+  const spinner = '<i class="fa-solid fa-spinner fa-spin spin"></i>';
+
+  function deviceId() {
+    let d = localStorage.getItem(DEVICE_KEY);
+    if (!d) {
+      d = (crypto.randomUUID && crypto.randomUUID()) || ('dev-' + Math.random().toString(36).slice(2) + Date.now());
+      localStorage.setItem(DEVICE_KEY, d);
+    }
+    return d;
+  }
+
+  function get() { return sessionStorage.getItem(SESSION_KEY); }
+  function store(key) { sessionStorage.setItem(SESSION_KEY, key); }
+  function forget() { sessionStorage.removeItem(SESSION_KEY); }
+
+  function fmtDate(iso) {
+    const d = new Date(iso);
+    return isNaN(d) ? iso : d.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+  }
+
+  function showError(msg) {
+    let err = keyWrapper.querySelector('.error-msg');
+    if (!err) {
+      err = document.createElement('div');
+      err.className = 'error-msg';
+      keyWrapper.appendChild(err);
+    }
+    err.textContent = msg;
+    keyInput.closest('.input-field').classList.add('invalid');
+  }
+  function clearError() {
+    keyWrapper.querySelector('.error-msg')?.remove();
+    keyInput.closest('.input-field').classList.remove('invalid');
+  }
+
+  function setLoading(on) {
+    btnKey.disabled = on;
+    btnKey.innerHTML = on ? `${spinner}<span>Memeriksa...</span>` : '<span>Aktifkan Akses</span>';
+    keyProgress.hidden = !on;
+  }
+
+  function unlock(info) {
+    clearError();
+    formKey.classList.add('hidden');
+    badge.classList.remove('hidden');
+    badgeText.textContent = `Akses aktif \u2014 berlaku s/d ${fmtDate(info.expiresAt)} (\u00b1${info.daysLeft} hari)`;
+    if (stepsEl) stepsEl.classList.remove('hidden');
+    formVerify.classList.add('hidden');
+    formSend.classList.remove('hidden');
+    Forms.setStep(1);
+    Toast.success('Fitur Alight Motion sudah terbuka', 'Key valid');
+  }
+
+  function lock(msg) {
+    forget();
+    badge.classList.add('hidden');
+    formSend.classList.add('hidden');
+    formVerify.classList.add('hidden');
+    if (stepsEl) stepsEl.classList.add('hidden');
+    formKey.classList.remove('hidden');
+    Forms.setStep(1);
+    keyInput.value = '';
+    if (msg) showError(msg);
+  }
+
+  async function verify(key) {
+    const res = await fetch(`${BASE}/api/check-key`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ key, deviceId: deviceId() })
+    });
+    if (!res.ok) throw new Error('Server pengecek key tidak merespons (' + res.status + ')');
+    return res.json();
+  }
+
+  async function submitKey(e) {
+    e.preventDefault();
+    const key = keyInput.value.trim().toUpperCase();
+    clearError();
+    if (key.length < 8) { showError('Masukkan key dengan lengkap'); return; }
+    setLoading(true);
+    try {
+      const res = await verify(key);
+      if (res.valid) {
+        store(key);
+        unlock(res);
+      } else {
+        lock(res.message || 'Access denied');
+        Toast.error(res.message || 'Access denied', 'Access Denied');
+      }
+    } catch (err) {
+      Toast.error(err.message || 'Tidak bisa menghubungi server key', 'Access Denied');
+      showError('Server key tidak dapat dihubungi');
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function resume() {
+    const stored = get();
+    if (!stored) { lock(); return; }
+    try {
+      const res = await verify(stored);
+      if (res.valid) unlock(res);
+      else lock(res.message || 'Key sudah tidak berlaku, masukkan key baru');
+    } catch {
+      lock('Server key tidak bisa dihubungi. Jalankan server.py / buka lewat URL website.');
+    }
+  }
+
+  function init() {
+    formKey.addEventListener('submit', submitKey);
+    keyInput.addEventListener('input', clearError);
+    btnOut.addEventListener('click', () => { lock(); Toast.info('Akses dikunci lagi'); });
+    document.addEventListener('DOMContentLoaded', resume);
+  }
+
+  return { init, get, deviceId, verify };
+})();
+
+/* ==========================================================================
    INITIALIZATION
    ========================================================================== */
 document.addEventListener('DOMContentLoaded', () => {
   ViewManager.init();
   Clipboard.init();
   CommandPalette.init();
+  AccessKey.init();
 
   // Sidebar toggle
   document.querySelector('.sidebar-toggle')?.addEventListener('click', toggleSidebar);
